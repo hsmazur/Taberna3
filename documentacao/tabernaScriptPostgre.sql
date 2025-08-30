@@ -1,6 +1,5 @@
 -- ===========================================
 -- SCRIPT DE CRIAÇÃO - TABERNA DO DRAGÃO
--- PostgreSQL (modelo estilo professor)
 -- ===========================================
 
 SET search_path TO public;
@@ -10,6 +9,7 @@ SET search_path TO public;
 -- ========================
 CREATE TABLE usuario (
   id_usuario SERIAL PRIMARY KEY,
+  nome_completo VARCHAR(150) NOT NULL,
   email VARCHAR(100) NOT NULL UNIQUE,
   senha VARCHAR(255) NOT NULL
 );
@@ -17,12 +17,12 @@ CREATE TABLE usuario (
 -- ========================
 -- Perfil (dados adicionais do usuário) - 1:1
 -- ========================
-CREATE TABLE perfil (
-  id_perfil SERIAL PRIMARY KEY,
+CREATE TABLE cliente (
+  id_cliente SERIAL PRIMARY KEY,
   id_usuario INT UNIQUE, -- UNIQUE garante 1:1
-  nome_completo VARCHAR(150) NOT NULL,
   telefone VARCHAR(20),
-  endereco VARCHAR(200)
+  endereco VARCHAR(200),
+  bairro VARCHAR(100)
 );
 
 -- ========================
@@ -30,10 +30,10 @@ CREATE TABLE perfil (
 -- ========================
 CREATE TABLE produto (
   id_produto SERIAL PRIMARY KEY,
-  nome VARCHAR(100) NOT NULL,
-  descricao TEXT,
-  preco DECIMAL(10,2) NOT NULL,
-  estoque INT DEFAULT 0
+  nome_produto VARCHAR(100) NOT NULL,
+  descricao_produto TEXT,
+  imagem_produto VARCHAR(255),
+  preco_produto DECIMAL(10,2) NOT NULL
 );
 
 -- ========================
@@ -74,8 +74,8 @@ CREATE TABLE pedido_produto (
 -- CONSTRAINTS (adicionadas no final)
 -- ========================
 
--- Perfil ↔ Usuario (1:1)
-ALTER TABLE perfil ADD CONSTRAINT fk_perfil_usuario
+-- Cliente ↔ Usuario (1:1)
+ALTER TABLE cliente ADD CONSTRAINT fk_cliente_usuario
   FOREIGN KEY (id_usuario)
   REFERENCES usuario (id_usuario)
   ON DELETE CASCADE ON UPDATE CASCADE;
