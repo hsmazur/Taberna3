@@ -1,0 +1,477 @@
+/* Fontes e Reset */
+.medievalsharp-regular {
+    font-family: "MedievalSharp", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo Geral */
+body {
+    background-image: url("https://wallpapers.com/images/hd/old-paper-texture-parchment-grodfr8ezxzzei6l.jpg");
+    background-attachment: fixed;
+    color: #3a3226;
+    font-family: "MedievalSharp", cursive;
+    line-height: 1.6;
+}
+
+/* Cabeçalho */
+#header {
+    background-color: #1a120b;
+    color: #d4a76a;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid #d4a76a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+#logo {
+    height: 80px;
+    margin-right: 20px;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+#header div h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    text-shadow: 2px 2px 4px #000;
+    color: #d4a76a;
+}
+
+#header div h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: normal;
+    color: #d4a76a;
+}
+
+nav {
+    margin-left: auto;
+}
+
+nav a {
+    color: #d4a76a;
+    margin-left: 1.5rem;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+nav a:hover {
+    color: #1a120b;
+    background-color: #d4a76a;
+    transform: translateY(-2px);
+}
+.botao-login,
+.botao-cadastro {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.botao-login {
+    background-color: #3a3226;
+    color: #d4a76a;
+    border-color: #d4a76a;
+}
+
+.botao-cadastro {
+    background-color: #1a120b;
+    color: #d4a76a;
+    border-color: #d4a76a;
+}
+
+.botao-login:hover,
+.botao-cadastro:hover {
+    background-color: #d4a76a;
+    color: #1a120b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+/* Estilo para o usuário logado */
+#usuario-logado {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+#nome-usuario {
+    color: #d4a76a;
+    font-size: 1.1rem;
+    margin-right: 0.5rem;
+}
+
+#logout {
+    color: #d4a76a;
+    text-decoration: none;
+    transition: all 0.3s;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+#logout:hover {
+    color: #1a120b;
+    background-color: #d4a76a;
+    transform: translateY(-2px);
+}
+
+/* Garante que apenas um dos dois seja mostrado */
+#usuario-logado,
+#usuario-deslogado {
+    margin-left: auto;
+}
+
+#header2 {
+    background-color: #3a3226;
+    color: #d4a76a;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Conteúdo Principal */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: rgba(255, 253, 245, 0.9);
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(58, 50, 38, 0.4);
+}
+/* Atualize o estilo do admin-panel e botões */
+#admin-panel {
+    display: none;
+    margin: 0 auto 1.5rem;
+    max-width: 1200px;
+    padding: 0 1rem;
+    text-align: center;
+}
+
+#admin-panel .botao-admin {
+    display: inline-block;
+    background-color: #8b4513;
+    color: #f5ecd7;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    text-decoration: none;
+    border-radius: 30px;
+    transition: all 0.3s;
+    border: 2px solid #5d2e0d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-family: "MedievalSharp", cursive;
+    margin: 0 0.5rem;
+}
+
+#admin-panel .botao-admin:hover {
+    background-color: #5d2e0d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Adicione media query para responsividade */
+@media (max-width: 600px) {
+    #admin-panel .botao-admin {
+        display: block;
+        margin: 0.5rem auto;
+        width: 80%;
+    }
+}
+
+#legenda {
+    font-size: 2.5rem;
+    text-align: center;
+    margin: 1rem 0 2rem;
+    color: #1a120b;
+    border-bottom: 2px solid #d4a76a;
+    padding-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Grid de Produtos - 3 por linha */
+#produtosContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Sempre 3 colunas */
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.card {
+    background-color: #fff9e6;
+    border: 1px solid #d4a76a;
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column; /* Alinhamento vertical */
+    align-items: center;
+    text-align: center;
+    height: 100%; /* Garante altura uniforme */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+    width: 150px; /* Tamanho um pouco maior */
+    height: 150px;
+    object-fit: cover;
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    margin-bottom: 1rem; /* Espaço abaixo da imagem */
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.card-info {
+    width: 100%;
+}
+
+.card-info h3 {
+    font-size: 1.4rem;
+    color: #1a120b;
+    margin-bottom: 0.5rem;
+}
+
+.card-info p {
+    color: #5c4d3d;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    min-height: 40px; /* Altura fixa para ingredientes */
+}
+
+.card-preco {
+    font-size: 1.6rem; /* Tamanho aumentado */
+    color: #8b0000;
+    font-weight: bold;
+    margin-top: auto; /* Empurra para baixo */
+    padding-top: 1rem;
+}
+
+/* Responsividade - ajuste para telas menores */
+@media (max-width: 1024px) {
+    #produtosContainer {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas em tablets */
+    }
+}
+
+@media (max-width: 600px) {
+    #produtosContainer {
+        grid-template-columns: 1fr; /* 1 coluna em mobile */
+    }
+    
+    .card {
+        max-width: 350px;
+        margin: 0 auto; /* Centraliza em mobile */
+    }
+}
+
+/* Efeito de hover mais suave */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Sombra mais pronunciada no hover */
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Controles de Quantidade - Centralizado */
+.quantidade {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    gap: 0.8rem;
+    margin-top: 1rem;
+    width: 100%; /* Ocupa toda a largura disponível */
+}
+
+/* Mantenha o restante do estilo dos botões */
+.btn-menos, .btn-mais {
+    background-color: #3a3226;
+    color: #f5ecd7;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-menos:hover, .btn-mais:hover {
+    background-color: #1a120b;
+    transform: scale(1.1);
+}
+
+.contador {
+    min-width: 30px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.card-preco {
+    font-size: 1.4rem;
+    color: #8b0000;
+    font-weight: bold;
+    margin-left: 1rem;
+    white-space: nowrap;
+}
+
+/* Botão do Carrinho */
+.botao-carrinho-wrapper {
+    margin: 2rem auto;
+    max-width: 600px;
+    padding: 0 1rem;
+}
+
+.botao-carrinho {
+    display: block;
+    background-color: #1a120b;
+    color: #d4a76a;
+    padding: 1rem;
+    font-size: 1.2rem;
+    text-align: center;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: all 0.3s;
+    border: 2px solid #d4a76a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.botao-carrinho:hover {
+    background-color: #d4a76a;
+    color: #1a120b;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Rodapé */
+#final {
+    background-color: #1a120b;
+    color: #d4a76a;
+    padding: 2rem;
+    margin-top: 3rem;
+    text-align: center;
+}
+
+#final h3 {
+    margin: 0.5rem 0;
+}
+
+#final a {
+    color: #d4a76a;
+    text-decoration: none;
+}
+
+#final a:hover {
+    text-decoration: underline;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #8b4513;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5d2e0d;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    nav {
+        margin: 1rem 0 0;
+    }
+    
+    #produtosContainer {
+        grid-template-columns: 1fr;
+    }
+    
+    .card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .card img {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .quantidade {
+        justify-content: center;
+    }
+}
+
+/* Efeitos Especiais */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.botao-carrinho:hover {
+    animation: pulse 1s infinite;
+}
+
+.card:hover .card-preco {
+    color: #b22222;
+    transition: color 0.3s;
+}
+@media (max-width: 768px) {
+    .botoes-usuario {
+        margin: 1rem 0 0;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    #header {
+        flex-wrap: wrap;
+    }
+    
+    nav {
+        width: 100%;
+        order: 3;
+        margin-top: 1rem;
+    }
+}
+/* Responsividade */
+@media (max-width: 768px) {
+    #usuario-logado, #usuario-deslogado {
+        margin: 1rem 0 0;
+        width: 100%;
+        justify-content: center;
+    }
+}

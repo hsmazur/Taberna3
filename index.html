@@ -1,11 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Redirecionando...</title>
+    <script>
+        // Redirecionamento automático após carregar a página
+        window.onload = function () {
+            window.location.href = "./frontend/produto.html";
+        };
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f5f5f5;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <a href="frontend/produtos/produto.html">Sobre</a>
+    <h1>Redirecionando para o Menu</h1>
+    <div class="loader"></div>
+    <p>Se o redirecionamento não funcionar automaticamente, <a href="frontend/menu.html">clique aqui</a>.</p>
 </body>
+
 </html>

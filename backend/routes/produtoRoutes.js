@@ -4,7 +4,7 @@
 
 const express = require('express');
 const multer = require('multer');
-const ProdutoController = require('./controllers/produtoController');
+const ProdutoController = require('../controllers/produtoController');
 
 const router = express.Router();
 
