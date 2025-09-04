@@ -18,6 +18,13 @@
   },
   "homepage": "https://github.com/hsmazur/Taberna3#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "fast-csv": "^5.0.5",
+    "fs": "^0.0.1-security",
+    "multer": "^2.0.2",
+    "path": "^0.12.7",
+    "pg": "^8.16.3"
   }
 }

@@ -26,13 +26,21 @@ CREATE TABLE cliente (
 );
 
 -- ========================
+-- Perfil (dados adicionais do usuário) - 1:1
+-- ========================
+CREATE TABLE funcionario (
+  id_funcionario SERIAL PRIMARY KEY,
+  id_usuario INT UNIQUE, -- UNIQUE garante 1:1
+  cargo VARCHAR(100)
+);
+
+-- ========================
 -- Produto (tabela isolada)
 -- ========================
 CREATE TABLE produto (
   id_produto SERIAL PRIMARY KEY,
   nome_produto VARCHAR(100) NOT NULL,
-  descricao_produto TEXT,
-  imagem_produto VARCHAR(255),
+  descricao TEXT,
   preco_produto DECIMAL(10,2) NOT NULL
 );
 
@@ -55,7 +63,7 @@ CREATE TABLE pedido (
   id_pedido SERIAL PRIMARY KEY,
   id_usuario INT NOT NULL,
   data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  status VARCHAR(50) DEFAULT 'Pendente',
+  pagamento VARCHAR(50) DEFAULT 'Pendente',
   valor_total DECIMAL(10,2) DEFAULT 0
 );
 
@@ -79,6 +87,12 @@ ALTER TABLE cliente ADD CONSTRAINT fk_cliente_usuario
   FOREIGN KEY (id_usuario)
   REFERENCES usuario (id_usuario)
   ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Funcionario ↔ Usuario (1:1)
+ALTER TABLE funcionario ADD CONSTRAINT fk_funcionario_usuario
+  FOREIGN KEY (id_usuario)
+  REFERENCES usuario (id_usuario)
+  ON DELETE CASCADE ON UPDATE CASCADE;  
 
 -- Avaliacao ↔ Produto (1:N)
 ALTER TABLE avaliacao ADD CONSTRAINT fk_avaliacao_produto
