@@ -1,66 +1,21 @@
-// ===========================================
-// ROTAS - PRODUTOS (INTEGRAÇÃO COM POSTGRESQL)
-// ===========================================
-
+// routes/produtoRoutes.js
 const express = require('express');
-const multer = require('multer');
-const ProdutoController = require('../controllers/produtoController');
-
 const router = express.Router();
+const produtoController = require('../controllers/produtoController');
 
-// Configuração do Multer para upload de imagens
-const upload = multer({ 
-    dest: 'uploads/',
-    fileFilter: (req, file, cb) => {
-        // Aceita apenas imagens
-        if (file.mimetype.startsWith('image/')) {
-            cb(null, true);
-        } else {
-            cb(new Error('Apenas arquivos de imagem são permitidos'), false);
-        }
-    },
-    limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB máximo
-    }
-});
+// Rota para listar todos os produtos
+router.get('/', produtoController.listarProdutos);
 
-// ========================
-// ROTAS CRUD - PRODUTOS
-// ========================
+// Rota para buscar produto por ID
+router.get('/:id', produtoController.buscarProdutoPorId);
 
-// GET /api/produtos - Listar todos os produtos
-router.get('/', ProdutoController.listarProdutos);
+// Rota para criar novo produto
+router.post('/', produtoController.criarProduto);
 
-// GET /api/produtos/:id - Buscar produto por ID
-router.get('/:id', ProdutoController.buscarProduto);
+// Rota para atualizar produto
+router.put('/:id', produtoController.atualizarProduto);
 
-// POST /api/produtos - Criar novo produto
-router.post('/', ProdutoController.criarProduto);
-
-// PUT /api/produtos - Atualizar produto existente
-router.put('/', ProdutoController.atualizarProduto);
-
-// DELETE /api/produtos/:id - Excluir produto
-router.delete('/:id', ProdutoController.excluirProduto);
-
-// ========================
-// ROTA PARA UPLOAD DE IMAGEM
-// ========================
-router.post('/upload-imagem', upload.single('imagem'), ProdutoController.uploadImagem);
-
-// Middleware de tratamento de erros do Multer
-router.use((error, req, res, next) => {
-    if (error instanceof multer.MulterError) {
-        if (error.code === 'LIMIT_FILE_SIZE') {
-            return res.status(400).json({ error: 'Arquivo muito grande. Máximo 5MB' });
-        }
-    }
-    
-    if (error.message === 'Apenas arquivos de imagem são permitidos') {
-        return res.status(400).json({ error: error.message });
-    }
-    
-    next(error);
-});
+// Rota para deletar produto
+router.delete('/:id', produtoController.deletarProduto);
 
 module.exports = router;

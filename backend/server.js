@@ -73,6 +73,12 @@ app.use((err, req, res, next) => {
 const produtoRoutes = require('./routes/produtoRoutes');
 app.use('/produto', produtoRoutes);
 
+const carrinhoRoutes = require('./routes/carrinhoRoutes');
+app.use('/carrinho', carrinhoRoutes);
+
+const CRUDprodutoRoutes = require('./routes/CRUDprodutoRoutes');
+app.use('/CRUDproduto', CRUDprodutoRoutes);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Rota padrão
