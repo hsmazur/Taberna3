@@ -1,12 +1,36 @@
 // controllers/carrinhoController.js
 const db = require('../database');
 
-// Listar itens do carrinho (simulação - pode usar sessão ou cookie)
+// Listar itens do carrinho
 const listarCarrinho = async (req, res) => {
   try {
-    // Por enquanto, retornamos um carrinho vazio
-    // Em uma implementação real, você usaria sessões ou autenticação
     const carrinho = req.session?.carrinho || [];
+    
+    // Se houver itens no carrinho, buscar informações dos produtos
+    if (carrinho.length > 0) {
+      const produtoIds = carrinho.map(item => item.produtoId);
+      const placeholders = produtoIds.map((_, index) => `$${index + 1}`).join(',');
+      
+      const result = await db.query(
+        `SELECT id_produto, nome_produto, preco_produto FROM produto WHERE id_produto IN (${placeholders})`,
+        produtoIds
+      );
+      
+      const produtos = result.rows;
+      
+      // Adicionar informações do produto aos itens do carrinho
+      const carrinhoCompleto = carrinho.map(item => {
+        const produto = produtos.find(p => p.id_produto === item.produtoId);
+        return {
+          ...item,
+          nome: produto?.nome_produto || 'Produto não encontrado',
+          preco: produto?.preco_produto || 0
+        };
+      });
+      
+      return res.json(carrinhoCompleto);
+    }
+    
     res.json(carrinho);
   } catch (error) {
     console.error('Erro ao listar carrinho:', error);
@@ -29,7 +53,7 @@ const atualizarCarrinho = async (req, res) => {
     }
     
     // Verifica se o produto existe
-    const produto = await db.query('SELECT id FROM produtos WHERE id = $1', [produtoId]);
+    const produto = await db.query('SELECT id_produto FROM produto WHERE id_produto = $1', [produtoId]);
     if (produto.rows.length === 0) {
       return res.status(404).json({ message: 'Produto não encontrado' });
     }

@@ -8,7 +8,7 @@ const dbConfig = {
   user: 'postgres', // Usuário padrão do PostgreSQL (ajuste conforme necessário)
   password: 'hugo1611?',
 
-  database: 'hugoMazurTaberna',
+  database: 'hugoMazurTaberna2',
   // Configurações específicas do PostgreSQL
   ssl: false, // Defina como true se usar SSL
   idleTimeoutMillis: 30000, // Timeout para conexões ociosas

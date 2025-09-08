@@ -1,4 +1,4 @@
-// frontend/menu.js - Reescrito para trabalhar com a estrutura MVC
+// frontend/menu.js - Corrigido para trabalhar com a estrutura do banco
 // Estado global
 let carrinho = [];
 let produtos = [];
@@ -37,9 +37,9 @@ async function inicializarPagina() {
 // Carrega produtos do servidor usando a rota correta
 async function carregarProdutos() {
     try {
-        console.log('Carregando produtos de:', `${API_BASE_URL}/produtos`);
+        console.log('Carregando produtos de:', `${API_BASE_URL}/produto`);
         
-        const response = await fetch(`${API_BASE_URL}/produtos`);
+        const response = await fetch(`${API_BASE_URL}/produto`);
         if (!response.ok) {
             throw new Error(`Erro HTTP: ${response.status}`);
         }
@@ -64,7 +64,7 @@ async function carregarCarrinho() {
         console.log('Carregando carrinho de:', `${API_BASE_URL}/carrinho`);
         
         const response = await fetch(`${API_BASE_URL}/carrinho`, {
-            credentials: 'include' // Importante para sessões
+            credentials: 'include'
         });
         
         if (!response.ok) {
@@ -83,7 +83,7 @@ async function carregarCarrinho() {
         
     } catch (error) {
         console.error("Erro ao carregar carrinho:", error);
-        carrinho = []; // Fallback para carrinho vazio
+        carrinho = [];
     }
 }
 

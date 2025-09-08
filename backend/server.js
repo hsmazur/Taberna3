@@ -5,7 +5,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 
 // Importar a configuração do banco PostgreSQL
-const db = require('./database'); // Ajuste o caminho conforme necessário
+const db = require('./database.js'); // Ajuste o caminho conforme necessário
 
 // Configurações do servidor - quando em produção, você deve substituir o IP e a porta pelo do seu servidor remoto
 //const HOST = '192.168.1.100'; // Substitua pelo IP do seu servidor remoto
