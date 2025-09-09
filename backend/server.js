@@ -76,8 +76,8 @@ app.use('/produto', produtoRoutes);
 const carrinhoRoutes = require('./routes/carrinhoRoutes');
 app.use('/carrinho', carrinhoRoutes);
 
-const CRUDprodutoRoutes = require('./routes/CRUDprodutoRoutes');
-app.use('/CRUDproduto', CRUDprodutoRoutes);
+const CRUDprodutoRoutes = require('./routes/CRUDprodutoRoutes.js');
+app.use('/api/produtos', CRUDprodutoRoutes);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

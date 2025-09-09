@@ -13,8 +13,8 @@
 
 /* Estilo Geral */
 body {
-    background-image: url("https://wallpapers.com/images/hd/old-paper-texture-parchment-grodfr8ezxzzei6l.jpg");
     background-attachment: fixed;
+    background-color: #f5ecd7;
     color: #3a3226;
     font-family: "MedievalSharp", cursive;
     line-height: 1.6;

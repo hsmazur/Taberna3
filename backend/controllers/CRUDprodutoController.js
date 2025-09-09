@@ -15,7 +15,7 @@ class ProdutoController {
         try {
             const sql = `
                 SELECT id_produto as id, nome_produto as nome, 
-                       descricao as ingredientes, imagemo as imagem, 
+                       descricao as ingredientes, 
                        preco_produto as preco 
                 FROM produto 
                 ORDER BY id_produto
@@ -23,12 +23,10 @@ class ProdutoController {
             
             const result = await query(sql);
             
-            // Ajusta o caminho da imagem se necessário
+            // Adiciona imagem padrão para cada produto
             const produtos = result.rows.map(produto => ({
                 ...produto,
-                imagem: produto.imagem && !produto.imagem.includes('img/') 
-                    ? `img/${produto.imagem}` 
-                    : produto.imagem || `img/lanche${produto.id}.png`
+                imagem: `img/lanche${produto.id}.png`
             }));
             
             res.json(produtos);
@@ -50,7 +48,7 @@ class ProdutoController {
             
             const sql = `
                 SELECT id_produto as id, nome_produto as nome, 
-                       descricao as ingredientes, imagemo as imagem, 
+                       descricao as ingredientes, 
                        preco_produto as preco 
                 FROM produto 
                 WHERE id_produto = $1
@@ -63,10 +61,8 @@ class ProdutoController {
             }
             
             const produto = result.rows[0];
-            // Ajusta caminho da imagem
-            produto.imagem = produto.imagem && !produto.imagem.includes('img/') 
-                ? `img/${produto.imagem}` 
-                : produto.imagem || `img/lanche${produto.id}.png`;
+            // Adiciona imagem padrão
+            produto.imagem = `img/lanche${produto.id}.png`;
             
             res.json(produto);
         } catch (error) {
@@ -101,22 +97,18 @@ class ProdutoController {
                 return res.status(409).json({ error: 'ID já existe' });
             }
             
-            // Nome padrão da imagem
-            const imagem = `lanche${id}.png`;
-            
             const insertSql = `
-                INSERT INTO produto (id_produto, nome_produto, descricao, imagemo, preco_produto)
-                VALUES ($1, $2, $3, $4, $5)
+                INSERT INTO produto (id_produto, nome_produto, descricao, preco_produto)
+                VALUES ($1, $2, $3, $4)
                 RETURNING id_produto as id, nome_produto as nome, 
-                         descricao as ingredientes, imagemo as imagem, 
-                         preco_produto as preco
+                         descricao as ingredientes, preco_produto as preco
             `;
             
-            const result = await query(insertSql, [id, nome, ingredientes, imagem, preco]);
+            const result = await query(insertSql, [id, nome, ingredientes, preco]);
             const novoProduto = result.rows[0];
             
-            // Ajusta caminho da imagem na resposta
-            novoProduto.imagem = `img/${novoProduto.imagem}`;
+            // Adiciona imagem padrão na resposta
+            novoProduto.imagem = `img/lanche${novoProduto.id}.png`;
             
             res.status(201).json(novoProduto);
         } catch (error) {
@@ -151,23 +143,19 @@ class ProdutoController {
                 return res.status(404).json({ error: 'Produto não encontrado' });
             }
             
-            // Nome padrão da imagem (mantém o padrão)
-            const imagem = `lanche${id}.png`;
-            
             const updateSql = `
                 UPDATE produto 
-                SET nome_produto = $2, descricao = $3, imagemo = $4, preco_produto = $5
+                SET nome_produto = $2, descricao = $3, preco_produto = $4
                 WHERE id_produto = $1
                 RETURNING id_produto as id, nome_produto as nome, 
-                         descricao as ingredientes, imagemo as imagem, 
-                         preco_produto as preco
+                         descricao as ingredientes, preco_produto as preco
             `;
             
-            const result = await query(updateSql, [id, nome, ingredientes, imagem, preco]);
+            const result = await query(updateSql, [id, nome, ingredientes, preco]);
             const produtoAtualizado = result.rows[0];
             
-            // Ajusta caminho da imagem na resposta
-            produtoAtualizado.imagem = `img/${produtoAtualizado.imagem}`;
+            // Adiciona imagem padrão na resposta
+            produtoAtualizado.imagem = `img/lanche${produtoAtualizado.id}.png`;
             
             res.json(produtoAtualizado);
         } catch (error) {
@@ -189,7 +177,7 @@ class ProdutoController {
             // Usa transação para garantir consistência
             const result = await transaction(async (client) => {
                 // Verifica se produto existe
-                const checkSql = 'SELECT id_produto, imagemo FROM produto WHERE id_produto = $1';
+                const checkSql = 'SELECT id_produto FROM produto WHERE id_produto = $1';
                 const existing = await client.query(checkSql, [id]);
                 
                 if (existing.rows.length === 0) {
@@ -268,10 +256,6 @@ class ProdutoController {
 
             // Move o arquivo para a pasta final
             fs.renameSync(req.file.path, caminhoDestino);
-
-            // Atualiza o caminho da imagem no banco (opcional)
-            const updateSql = 'UPDATE produto SET imagemo = $1 WHERE id_produto = $2';
-            await query(updateSql, [novoNome, id]);
 
             res.json({ 
                 success: true, 

@@ -7,7 +7,7 @@ let oQueEstaFazendo = '';
 let produto = null;
 
 // URL base da API (ajustar conforme necessário)
-const API_BASE_URL = 'http://localhost:3000/api/produtos';
+const API_BASE_URL = 'http://localhost:3001/api/produtos';
 
 // ========================
 // INICIALIZAÇÃO
@@ -221,7 +221,7 @@ async function salvar() {
 
         // Validação básica
         if (!id || !nome || !ingredientes || isNaN(preco)) {
-            mostrarAviso("❌ Preencha todos os campos corretamente!");
+            mostrarAviso("⚠️ Preencha todos os campos corretamente!");
             return;
         }
 
@@ -242,7 +242,7 @@ async function salvar() {
                 break;
                 
             default:
-                mostrarAviso("❌ Operação inválida");
+                mostrarAviso("⚠️ Operação inválida");
                 return;
         }
 
@@ -423,16 +423,14 @@ function preparaListagem(vetor) {
         const imagemSrc = produto.imagem || `img/lanche${produto.id}.png`;
         
         html += `
-            <div class="produto-item" style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px;">
+            <div class="produto-item">
                 <img src="../${imagemSrc}" alt="${produto.nome}" 
-                     onerror="this.src='../img/sem-imagem.png'" 
-                     style="width: 80px; height: 80px; object-fit: cover; float: left; margin-right: 10px;">
-                <div>
-                    <strong>ID: ${produto.id}</strong> - ${produto.nome}<br>
-                    <small><strong>Ingredientes:</strong> ${produto.ingredientes}</small><br>
-                    <span style="color: #28a745; font-weight: bold;">R$ ${parseFloat(produto.preco).toFixed(2)}</span>
+                     onerror="this.src='../img/sem-imagem.png'">
+                <div class="produto-info">
+                    <strong>ID: ${produto.id} - ${produto.nome}</strong>
+                    <small><strong>Ingredientes:</strong> ${produto.ingredientes}</small>
+                    <div class="preco">R$ ${parseFloat(produto.preco).toFixed(2)}</div>
                 </div>
-                <div style="clear: both;"></div>
             </div>
         `;
     }
