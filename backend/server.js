@@ -79,6 +79,9 @@ app.use('/carrinho', carrinhoRoutes);
 const CRUDprodutoRoutes = require('./routes/CRUDprodutoRoutes.js');
 app.use('/api/produtos', CRUDprodutoRoutes);
 
+const CRUDusuarioRoutes = require('./routes/CRUDusuarioRoutes.js');
+app.use('/api/usuarios', CRUDusuarioRoutes);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Rota padrão
