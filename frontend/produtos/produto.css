@@ -1,21 +1,26 @@
-/* Container Principal - MODIFICADO */
+/* Container Principal - MODIFICADO para ficar similar ao usuario.css */
 .crud-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 2rem auto;
     padding: 1rem;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 2rem;
 }
 
-/* Formulário CRUD */
+@media (max-width: 900px) {
+    .crud-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Formulário CRUD - MODIFICADO */
 .crud-form {
     background-color: rgba(255, 253, 245, 0.9);
     padding: 1.5rem;
     border: 2px solid #3a3226;
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(58, 50, 38, 0.4);
-    order: 1; /* Formulário vem primeiro */
 }
 
 /* Lista de Produtos - MODIFICADO */
@@ -25,33 +30,12 @@
     border: 2px solid #3a3226;
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(58, 50, 38, 0.4);
-    order: 2; /* Lista vem depois (embaixo) */
+    min-height: 600px;
 }
 
-/* Layout para telas maiores - MODIFICADO */
-@media (min-width: 901px) {
-    .crud-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas: 
-            "form list"
-            "form list";
-    }
-    
-    .crud-form {
-        grid-area: form;
-    }
-    
-    .produtos-list {
-        grid-area: list;
-        height: fit-content;
-        max-height: 80vh;
-    }
-}
-
-/* Ajuste para a lista de produtos */
+/* Ajuste para a lista de produtos - MODIFICADO */
 .lista-produtos {
-    max-height: 400px;
+    max-height: 500px;
     overflow-y: auto;
     padding: 1rem;
     background-color: #fff9e6;
@@ -60,21 +44,20 @@
     margin-bottom: 1.5rem;
 }
 
-/* Melhorias na exibição dos produtos */
+/* Melhorias na exibição dos produtos - MODIFICADO */
 .produto-item {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
+    padding: 1.2rem;
     margin-bottom: 1rem;
     background-color: #fff9e6;
     border: 1px solid #d4a76a;
-    border-radius: 4px;
-    transition: transform 0.2s;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
 }
 
 .produto-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateX(5px);
+    background-color: #f5ecd7;
 }
 
 .produto-item img {
@@ -85,15 +68,18 @@
     border-radius: 8px;
     margin-right: 1rem;
     box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+    float: left;
 }
 
 .produto-info {
-    flex-grow: 1;
+    overflow: hidden;
 }
 
 .produto-info strong {
     color: #3a3226;
     font-size: 1.1rem;
+    display: block;
+    margin-bottom: 0.5rem;
 }
 
 .produto-info small {
@@ -106,10 +92,11 @@
     color: #8b0000;
     font-weight: bold;
     font-size: 1.1rem;
-    margin-top: 0.3rem;
+    margin-top: 0.5rem;
+    display: block;
 }
 
-/* Restante do CSS permanece igual */
+/* Estilos do formulário (mantidos do usuario.css) */
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -230,13 +217,9 @@
     cursor: not-allowed;
 }
 
-.produto-item small {
-    color: #5c4d3d;
-}
-
 /* Scrollbar personalizada */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 12px;
 }
 
 ::-webkit-scrollbar-track {
