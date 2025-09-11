@@ -1,6 +1,6 @@
-    /* Container Principal */
+/* Container Principal */
 .crud-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 2rem auto;
     padding: 1rem;
     display: grid;
@@ -57,6 +57,7 @@
     border: 2px solid #3a3226;
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(58, 50, 38, 0.4);
+    min-height: 600px;
 }
 
 .usuarios-list h3 {
@@ -68,7 +69,7 @@
 }
 
 .lista-usuarios {
-    max-height: 400px;
+    max-height: 500px;
     overflow-y: auto;
     padding: 1rem;
     background-color: #fff9e6;
@@ -78,9 +79,17 @@
 }
 
 .lista-usuarios div {
-    padding: 0.8rem;
+    padding: 1rem;
     border-bottom: 1px dashed #d4a76a;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
+    background-color: #faf3e0;
+    border-radius: 6px;
+    transition: transform 0.2s ease;
+}
+
+.lista-usuarios div:hover {
+    transform: translateX(5px);
+    background-color: #f5ecd7;
 }
 
 .lista-usuarios div:last-child {
@@ -181,26 +190,55 @@
 }
 
 .usuario-item {
-    padding: 1rem;
+    padding: 1.2rem;
     margin-bottom: 1rem;
     background-color: #fff9e6;
     border: 1px solid #d4a76a;
-    border-radius: 4px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.usuario-item strong {
+    color: #3a3226;
+    font-size: 1.1rem;
 }
 
 .usuario-item small {
     color: #5c4d3d;
+    display: block;
+    margin-top: 0.5rem;
 }
 
-.tipo {
-    color: #8b0000;
-    font-weight: bold;
-    font-size: 1.1rem;
+.usuario-item .tipo {
+    display: inline-block;
+    padding: 0.2rem 0.8rem;
+    background-color: #8b4513;
+    color: #f5ecd7;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.usuario-item .detalhes {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px dotted #d4a76a;
+    font-size: 0.9rem;
+    color: #5c4d3d;
+}
+
+/* Campos adicionais */
+#campos-cliente, #campos-funcionario {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #faf3e0;
+    border: 1px solid #d4a76a;
+    border-radius: 6px;
 }
 
 /* Scrollbar personalizada */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 12px;
 }
 
 ::-webkit-scrollbar-track {
@@ -215,4 +253,15 @@
 
 ::-webkit-scrollbar-thumb:hover {
     background: #5d2e0d;
+}
+
+/* Validação de telefone */
+.telefone-valido {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5) !important;
+}
+
+.telefone-invalido {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 5px rgba(220, 53, 69, 0.5) !important;
 }

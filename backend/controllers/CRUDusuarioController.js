@@ -1,5 +1,5 @@
 // ===========================================
-// CONTROLLER - GERENCIAMENTO DE USUÁRIOS (SEM TIPO)
+// CONTROLLER - GERENCIAMENTO DE USUÁRIOS (ATUALIZADO)
 // ===========================================
 
 const { query, transaction } = require('../database');
@@ -19,7 +19,16 @@ class UsuarioController {
             `;
             
             const result = await query(sql);
-            res.json(result.rows);
+            
+            // Adiciona tipo baseado nas tabelas cliente/funcionario
+            const usuariosComTipo = await Promise.all(
+                result.rows.map(async (usuario) => {
+                    const tipo = await UsuarioController.detectarTipoUsuario(usuario.id);
+                    return { ...usuario, tipo };
+                })
+            );
+            
+            res.json(usuariosComTipo);
         } catch (error) {
             console.error('Erro ao listar usuários:', error);
             res.status(500).json({ 
@@ -49,7 +58,11 @@ class UsuarioController {
                 return res.status(404).json({ error: 'Usuário não encontrado' });
             }
             
-            res.json(result.rows[0]);
+            const usuario = result.rows[0];
+            // Detecta o tipo do usuário
+            usuario.tipo = await UsuarioController.detectarTipoUsuario(id);
+            
+            res.json(usuario);
         } catch (error) {
             console.error('Erro ao buscar usuário:', error);
             res.status(500).json({ 
@@ -60,11 +73,41 @@ class UsuarioController {
     }
     
     // ========================
+    // DETECTAR TIPO DO USUÁRIO
+    // ========================
+    static async detectarTipoUsuario(idUsuario) {
+        try {
+            // Verifica se é funcionário
+            const funcionarioSql = 'SELECT id_funcionario FROM funcionario WHERE id_usuario = $1';
+            const funcionarioResult = await query(funcionarioSql, [idUsuario]);
+            
+            if (funcionarioResult.rows.length > 0) {
+                return 'funcionario';
+            }
+            
+            // Verifica se é cliente
+            const clienteSql = 'SELECT id_cliente FROM cliente WHERE id_usuario = $1';
+            const clienteResult = await query(clienteSql, [idUsuario]);
+            
+            if (clienteResult.rows.length > 0) {
+                return 'cliente';
+            }
+            
+            // Se não está em nenhuma tabela, retorna padrão
+            return 'cliente';
+            
+        } catch (error) {
+            console.error('Erro ao detectar tipo:', error);
+            return 'cliente'; // Padrão seguro
+        }
+    }
+    
+    // ========================
     // CRIAR NOVO USUÁRIO
     // ========================
     static async criarUsuario(req, res) {
         try {
-            const { id, nome, email, senha } = req.body;
+            const { id, nome, email, senha, tipo } = req.body;
             
             // Validação básica
             if (!id || !nome || !email || !senha) {
@@ -98,8 +141,12 @@ class UsuarioController {
             `;
             
             const result = await query(insertSql, [id, nome, email, senha]);
+            const novoUsuario = result.rows[0];
             
-            res.status(201).json(result.rows[0]);
+            // Adiciona tipo na resposta
+            novoUsuario.tipo = tipo || 'cliente';
+            
+            res.status(201).json(novoUsuario);
         } catch (error) {
             console.error('Erro ao criar usuário:', error);
             res.status(500).json({ 
@@ -114,7 +161,7 @@ class UsuarioController {
     // ========================
     static async atualizarUsuario(req, res) {
         try {
-            const { id, nome, email, senha } = req.body;
+            const { id, nome, email, senha, tipo } = req.body;
             
             // Validação básica
             if (!id || !nome || !email || !senha) {
@@ -149,8 +196,12 @@ class UsuarioController {
             `;
             
             const result = await query(updateSql, [id, nome, email, senha]);
+            const usuarioAtualizado = result.rows[0];
             
-            res.json(result.rows[0]);
+            // Adiciona tipo na resposta
+            usuarioAtualizado.tipo = tipo || 'cliente';
+            
+            res.json(usuarioAtualizado);
         } catch (error) {
             console.error('Erro ao atualizar usuário:', error);
             res.status(500).json({ 

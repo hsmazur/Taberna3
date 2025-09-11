@@ -4,6 +4,8 @@ let usuario = null;
 
 // URL base da API
 const API_BASE_URL = 'http://localhost:3001/api/usuarios';
+const CLIENTE_BASE_URL = 'http://localhost:3001/api/clientes';
+const FUNCIONARIO_BASE_URL = 'http://localhost:3001/api/funcionarios';
 
 // ========================
 // INICIALIZAÇÃO
@@ -12,7 +14,78 @@ document.addEventListener('DOMContentLoaded', async () => {
     await carregarUsuariosDoBanco();
     bloquearAtributos(true);
     mostrarAviso('Sistema carregado. Digite um ID e clique em "Procurar"');
+    
+    // Adiciona máscara de telefone
+    document.getElementById('telefone').addEventListener('input', function(e) {
+        aplicarMascaraTelefone(e.target);
+        validarTelefone(e.target);
+    });
 });
+
+// ========================
+// FUNÇÕES DE INTERFACE
+// ========================
+
+/**
+ * Mostra campos adicionais baseado no tipo selecionado
+ */
+function mostrarCamposAdicionais() {
+    const tipo = document.getElementById("tipo").value;
+    const camposCliente = document.getElementById("campos-cliente");
+    const camposFuncionario = document.getElementById("campos-funcionario");
+    
+    camposCliente.style.display = 'none';
+    camposFuncionario.style.display = 'none';
+    
+    if (tipo === 'cliente') {
+        camposCliente.style.display = 'block';
+    } else if (tipo === 'funcionario') {
+        camposFuncionario.style.display = 'block';
+    }
+}
+
+/**
+ * Aplica máscara de telefone
+ */
+function aplicarMascaraTelefone(input) {
+    let value = input.value.replace(/\D/g, '');
+    
+    if (value.length <= 11) {
+        if (value.length <= 2) {
+            value = value.replace(/^(\d{0,2})/, '($1');
+        } else if (value.length <= 6) {
+            value = value.replace(/^(\d{2})(\d{0,4})/, '($1) $2');
+        } else if (value.length <= 10) {
+            value = value.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+        } else {
+            value = value.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+        }
+    }
+    
+    input.value = value;
+}
+
+/**
+ * Valida formato do telefone
+ */
+function validarTelefone(input) {
+    const telefone = input.value.replace(/\D/g, '');
+    const isValid = telefone.length >= 10 && telefone.length <= 11;
+    
+    input.classList.remove('telefone-valido', 'telefone-invalido');
+    
+    if (telefone === '') {
+        return true;
+    }
+    
+    if (isValid) {
+        input.classList.add('telefone-valido');
+        return true;
+    } else {
+        input.classList.add('telefone-invalido');
+        return false;
+    }
+}
 
 // ========================
 // COMUNICAÇÃO COM O BANCO VIA API
@@ -31,6 +104,12 @@ async function carregarUsuariosDoBanco() {
         }
         
         listaUsuario = await response.json();
+        
+        // Carrega dados adicionais de cada usuário
+        for (let usuario of listaUsuario) {
+            usuario.detalhes = await carregarDetalhesUsuario(usuario.id);
+        }
+        
         listar();
         mostrarAviso(`${listaUsuario.length} usuários carregados do banco`);
         
@@ -38,6 +117,33 @@ async function carregarUsuariosDoBanco() {
         console.error('Erro ao carregar usuários:', error);
         mostrarAviso(`Erro ao carregar usuários: ${error.message}`);
         listaUsuario = [];
+    }
+}
+
+/**
+ * Carrega detalhes adicionais do usuário (cliente ou funcionário)
+ */
+async function carregarDetalhesUsuario(idUsuario) {
+    try {
+        // Tenta carregar como cliente
+        const responseCliente = await fetch(`${CLIENTE_BASE_URL}/usuario/${idUsuario}`);
+        if (responseCliente.ok) {
+            const cliente = await responseCliente.json();
+            return { tipo: 'cliente', ...cliente };
+        }
+        
+        // Tenta carregar como funcionário
+        const responseFuncionario = await fetch(`${FUNCIONARIO_BASE_URL}/usuario/${idUsuario}`);
+        if (responseFuncionario.ok) {
+            const funcionario = await responseFuncionario.json();
+            return { tipo: 'funcionario', ...funcionario };
+        }
+        
+        return { tipo: 'desconhecido' };
+        
+    } catch (error) {
+        console.error('Erro ao carregar detalhes:', error);
+        return { tipo: 'erro' };
     }
 }
 
@@ -71,6 +177,40 @@ async function salvarUsuarioNoBanco(usuarioData) {
         
     } catch (error) {
         console.error('Erro ao salvar usuário:', error);
+        throw error;
+    }
+}
+
+/**
+ * Salva dados adicionais do usuário
+ */
+async function salvarDadosAdicionais(idUsuario, tipo, dados) {
+    try {
+        const url = tipo === 'cliente' ? CLIENTE_BASE_URL : FUNCIONARIO_BASE_URL;
+        const method = oQueEstaFazendo === 'alterando' ? 'PUT' : 'POST';
+        
+        const dadosCompletos = {
+            ...dados,
+            id_usuario: idUsuario
+        };
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosCompletos)
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Erro HTTP: ${response.status}`);
+        }
+        
+        return await response.json();
+        
+    } catch (error) {
+        console.error('Erro ao salvar dados adicionais:', error);
         throw error;
     }
 }
@@ -186,11 +326,21 @@ async function salvar() {
         const nome = document.getElementById("nome").value.trim();
         const email = document.getElementById("email").value.trim();
         const senha = document.getElementById("senha").value;
+        const tipo = document.getElementById("tipo").value;
 
         // Validação básica
-        if (!id || !nome || !email || !senha) {
+        if (!id || !nome || !email || !senha || !tipo) {
             mostrarAviso("⚠️ Preencha todos os campos corretamente!");
             return;
+        }
+
+        // Validação específica para cliente
+        if (tipo === 'cliente') {
+            const telefone = document.getElementById("telefone").value;
+            if (telefone && !validarTelefone(document.getElementById("telefone"))) {
+                mostrarAviso("⚠️ Telefone inválido! Use o formato (11) 99999-9999");
+                return;
+            }
         }
 
         mostrarAviso("Salvando no banco de dados...");
@@ -198,11 +348,11 @@ async function salvar() {
         // Executa operação conforme o que está fazendo
         switch (oQueEstaFazendo) {
             case 'inserindo':
-                await inserirNoBanco(id, nome, email, senha);
+                await inserirNoBanco(id, nome, email, senha, tipo);
                 break;
                 
             case 'alterando':
-                await alterarNoBanco(id, nome, email, senha);
+                await alterarNoBanco(id, nome, email, senha, tipo);
                 break;
                 
             case 'excluindo':
@@ -226,19 +376,49 @@ async function salvar() {
 /**
  * Inserir usuário no banco
  */
-async function inserirNoBanco(id, nome, email, senha) {
+async function inserirNoBanco(id, nome, email, senha, tipo) {
+    // Salva usuário básico
     const usuarioData = { id, nome, email, senha };
     await salvarUsuarioNoBanco(usuarioData);
+    
+    // Salva dados adicionais
+    const dadosAdicionais = obterDadosAdicionais(tipo);
+    await salvarDadosAdicionais(id, tipo, dadosAdicionais);
+    
     mostrarAviso("✅ Usuário inserido com sucesso!");
 }
 
 /**
  * Alterar usuário no banco
  */
-async function alterarNoBanco(id, nome, email, senha) {
+async function alterarNoBanco(id, nome, email, senha, tipo) {
+    // Atualiza usuário básico
     const usuarioData = { id, nome, email, senha };
     await salvarUsuarioNoBanco(usuarioData);
+    
+    // Atualiza dados adicionais
+    const dadosAdicionais = obterDadosAdicionais(tipo);
+    await salvarDadosAdicionais(id, tipo, dadosAdicionais);
+    
     mostrarAviso("✅ Usuário alterado com sucesso!");
+}
+
+/**
+ * Obtém dados adicionais do formulário
+ */
+function obterDadosAdicionais(tipo) {
+    if (tipo === 'cliente') {
+        return {
+            telefone: document.getElementById("telefone").value.replace(/\D/g, ''),
+            endereco: document.getElementById("endereco").value.trim(),
+            bairro: document.getElementById("bairro").value.trim()
+        };
+    } else if (tipo === 'funcionario') {
+        return {
+            cargo: document.getElementById("cargo").value
+        };
+    }
+    return {};
 }
 
 /**
@@ -290,6 +470,20 @@ function mostrarDadosUsuario(usuario) {
     document.getElementById("email").value = usuario.email;
     document.getElementById("senha").value = usuario.senha;
     
+    // Preenche tipo e dados adicionais
+    if (usuario.detalhes) {
+        document.getElementById("tipo").value = usuario.detalhes.tipo;
+        mostrarCamposAdicionais();
+        
+        if (usuario.detalhes.tipo === 'cliente') {
+            document.getElementById("telefone").value = usuario.detalhes.telefone || '';
+            document.getElementById("endereco").value = usuario.detalhes.endereco || '';
+            document.getElementById("bairro").value = usuario.detalhes.bairro || '';
+        } else if (usuario.detalhes.tipo === 'funcionario') {
+            document.getElementById("cargo").value = usuario.detalhes.cargo || 'cozinheiro';
+        }
+    }
+    
     bloquearAtributos(true);
 }
 
@@ -300,6 +494,18 @@ function limparAtributos() {
     document.getElementById("nome").value = "";
     document.getElementById("email").value = "";
     document.getElementById("senha").value = "";
+    document.getElementById("tipo").value = "cliente";
+    document.getElementById("telefone").value = "";
+    document.getElementById("endereco").value = "";
+    document.getElementById("bairro").value = "";
+    document.getElementById("cargo").value = "cozinheiro";
+    
+    // Limpa classes de validação
+    document.getElementById("telefone").classList.remove('telefone-valido', 'telefone-invalido');
+    
+    // Esconde campos adicionais
+    document.getElementById("campos-cliente").style.display = 'none';
+    document.getElementById("campos-funcionario").style.display = 'none';
     
     bloquearAtributos(true);
 }
@@ -311,6 +517,11 @@ function bloquearAtributos(soLeitura) {
     document.getElementById("nome").readOnly = soLeitura;
     document.getElementById("email").readOnly = soLeitura;
     document.getElementById("senha").readOnly = soLeitura;
+    document.getElementById("tipo").disabled = soLeitura;
+    document.getElementById("telefone").readOnly = soLeitura;
+    document.getElementById("endereco").readOnly = soLeitura;
+    document.getElementById("bairro").readOnly = soLeitura;
+    document.getElementById("cargo").disabled = soLeitura;
 }
 
 /**
@@ -355,6 +566,18 @@ function listar() {
             <div class="usuario-item">
                 <strong>ID: ${usuario.id}</strong> - ${usuario.nome}<br>
                 <small>Email: ${usuario.email}</small>
+                ${usuario.detalhes ? `
+                    <div class="tipo">${usuario.detalhes.tipo.toUpperCase()}</div>
+                    <div class="detalhes">
+                        ${usuario.detalhes.tipo === 'cliente' ? 
+                            `Telefone: ${usuario.detalhes.telefone || 'Não informado'}<br>
+                             Endereço: ${usuario.detalhes.endereco || 'Não informado'}<br>
+                             Bairro: ${usuario.detalhes.bairro || 'Não informado'}`
+                        : usuario.detalhes.tipo === 'funcionario' ?
+                            `Cargo: ${usuario.detalhes.cargo || 'Não definido'}`
+                        : 'Tipo não definido'}
+                    </div>
+                ` : ''}
             </div>
         `;
     });
@@ -375,3 +598,4 @@ window.salvar = salvar;
 window.cancelarOperacao = cancelarOperacao;
 window.mostrarAviso = mostrarAviso;
 window.listar = listar;
+window.mostrarCamposAdicionais = mostrarCamposAdicionais;

@@ -82,6 +82,12 @@ app.use('/api/produtos', CRUDprodutoRoutes);
 const CRUDusuarioRoutes = require('./routes/CRUDusuarioRoutes.js');
 app.use('/api/usuarios', CRUDusuarioRoutes);
 
+const clienteRoutes = require('./routes/clienteRoutes.js');
+app.use('/api/clientes', clienteRoutes);
+
+const funcionarioRoutes = require('./routes/funcionarioRoutes.js');
+app.use('/api/funcionarios', funcionarioRoutes);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Rota padrão
