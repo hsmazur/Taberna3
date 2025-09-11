@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho - Taberna do Dragão</title>
+    <link rel="stylesheet" href="../universal.css">
+    <link rel="stylesheet" href="carrinho.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header id="header"> 
+        <img id="logo" src="../img/logo.png" alt="Taberna do Dragão">
+        <div>
+            <h1>Taberna do Dragão</h1>
+            <h2>Alimentando o reino desde 2025!</h2>
+        </div>
+    </header>
+    <header id="header2">
+        <h3>Rua Zézinho da Silva, 123 - Centro</h3>
+    </header>
+
+    <main>
+        <div id="legenda">Seu Carrinho</div>
+        
+        <!-- Opções de Entrega/Retirada -->
+        <div class="opcoes-entrega">
+            <label>
+                <input type="radio" name="tipo-entrega" value="retirada" checked>
+                <span>Retirada no Local</span>
+            </label>
+            <label>
+                <input type="radio" name="tipo-entrega" value="entrega">
+                <span>Entrega (+R$ 5,00)</span>
+            </label>
+        </div>
+
+        <!-- Formulário de Entrega (aparece apenas quando selecionado) -->
+        <div id="formulario-entrega" class="hidden">
+            <h3>Informações para Entrega</h3>
+            <input type="text" id="nome" placeholder="Seu Nome" required>
+            <input type="tel" id="telefone" placeholder="Telefone" required>
+            <input type="text" id="endereco" placeholder="Endereço" required>
+            <input type="text" id="bairro" placeholder="Bairro" required>
+        </div>
+
+        <!-- Lista de Itens -->
+        <div id="lista-carrinho"></div>
+
+        <!-- Resumo do Pedido -->
+        <div id="total-carrinho"></div>
+
+        <!-- Botões de Ação -->
+        <div id="botoes-finalizacao">
+            <a href="../menu.html" class="botao_altera">Voltar ao Cardápio</a>
+            <a href="pagamento.html" id="btn-confirmar" class="botao_altera">Confirmar Pedido</a>
+        </div>
+    </main>
+
+    <footer id="final">
+        <h3>Taberna do Dragão &copy; 2025</h3>
+        <h3>Contato: (44) 91234-5678</h3>
+    </footer>
+
+    <script src="carrinho.js"></script>
+</body>
+</html>
