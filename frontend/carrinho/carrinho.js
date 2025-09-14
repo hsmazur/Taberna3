@@ -106,7 +106,7 @@ function renderizarCarrinho() {
 
     html += `
       <div class="item-carrinho" data-id="${produto.id}">
-        <img src="img/lanche${produto.id}.png" alt="${produto.nome}" onerror="this.src='img/sem-imagem.png'">
+        <img src="../img/lanche${produto.id}.png" alt="${produto.nome}" onerror="this.src='img/sem-imagem.png'">
         <div class="item-info">
           <h3>${produto.nome}</h3>
           <p class="ingredientes">${produto.ingredientes}</p>
@@ -116,7 +116,7 @@ function renderizarCarrinho() {
             <button class="btn-aumentar" data-id="${produto.id}">+</button>
             <button class="btn-remover" data-id="${produto.id}">X</button>
           </div>
-          <p class="preco">R$ ${preco.toFixed(2)}</p>
+          <p class="preco">Preço unitário: R$ ${preco.toFixed(2)}</p>
           <p class="subtotal">Subtotal: R$ ${subtotal.toFixed(2)}</p>
         </div>
       </div>
