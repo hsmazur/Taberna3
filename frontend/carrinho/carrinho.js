@@ -111,9 +111,11 @@ function renderizarCarrinho() {
           <h3>${produto.nome}</h3>
           <p class="ingredientes">${produto.ingredientes}</p>
           <div class="item-controls">
-            <button class="btn-diminuir" data-id="${produto.id}">−</button>
-            <span class="quantidade">${item.quantidade}</span>
-            <button class="btn-aumentar" data-id="${produto.id}">+</button>
+            <div class="quantidade-controls">
+              <button class="btn-diminuir" data-id="${produto.id}">−</button>
+              <span class="quantidade">${item.quantidade}</span>
+              <button class="btn-aumentar" data-id="${produto.id}">+</button>
+            </div>
             <button class="btn-remover" data-id="${produto.id}">X</button>
           </div>
           <p class="preco">Preço unitário: R$ ${preco.toFixed(2)}</p>

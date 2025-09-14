@@ -68,35 +68,46 @@ main {
 /* Controles de Quantidade */
 .item-controls {
     display: flex;
-    align-items: center;
-    gap: 0.8rem;
+    flex-direction: column; /* empilha: quantidade em cima, remover embaixo */
+    align-items: flex-start;
+    gap: 0.5rem;
     margin: 1rem 0;
+}
+
+/* Agrupamento dos botões +/- e número */
+.quantidade-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+
+/* Padronização de tamanho para botões e número */
+.item-controls button,
+.quantidade {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    line-height: 1;
 }
 
 .item-controls button {
     background-color: #3a3226;
     color: #f5ecd7;
     border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    font-size: 1.2rem;
+    border-radius: 6px; /* quadrado arredondado */
     cursor: pointer;
     transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .item-controls button:hover {
     background-color: #1a120b;
     transform: scale(1.1);
-}
-
-.quantidade {
-    min-width: 30px;
-    text-align: center;
-    font-weight: bold;
 }
 
 .btn-remover {
@@ -115,7 +126,8 @@ main {
 }
 
 /* Preços */
-.preco, .subtotal {
+.preco,
+.subtotal {
     font-weight: bold;
     color: #1a120b;
     margin: 0.3rem 0;
@@ -225,6 +237,7 @@ main {
     background-color: #d4a76a;
     color: #1a120b;
 }
+
 /* Opções de Entrega/Retirada */
 .opcoes-entrega {
     margin: 1.5rem 0;
@@ -253,6 +266,7 @@ main {
 .opcoes-entrega input[type="radio"] {
     accent-color: #3a3226;
 }
+
 /* Formulário de Entrega */
 #formulario-entrega {
     background-color: #fff9e6;
@@ -282,8 +296,6 @@ main {
     background-color: #fff;
     font-family: 'MedievalSharp', cursive;
 }
-
-
 
 /* Responsividade */
 @media (max-width: 768px) {
