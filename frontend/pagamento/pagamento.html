@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taberna do Dragão - Pagamento</title>
+    <link rel="stylesheet" href="../universal.css">
+    <link rel="stylesheet" href="pagamento.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Cabeçalho (mantido igual) -->
+    <header id="header"> 
+        <img id="logo" src="../img/logo.png" alt="Taberna do Dragão">
+        <div>
+            <h1>Taberna do Dragão</h1>
+            <h2>Alimentando o reino desde 2025!</h2>
+        </div>
+    </header>
+    <header id="header2">
+        <h3>Rua Zézinho da Silva, 123 - Centro</h3>
+    </header>
+
+    <main class="container">
+        <h1>Finalizar Pagamento</h1>
+
+        <div id="valor-total" class="valor-total"></div>
+
+        <div id="botao_volta">
+            <a href="../carrinho/carrinho.html" class="botao_carrinho">Voltar ao Carrinho</a>
+        </div> 
+
+        <div id="opcoes-pagamento">
+            <h2>Escolha a forma de pagamento:</h2>
+            <label class="opcao">
+                <input type="radio" name="pagamento" value="dinheiro" checked>
+                <span>Dinheiro</span>
+            </label>
+            <label class="opcao">
+                <input type="radio" name="pagamento" value="pix">
+                <span>PIX</span>
+            </label>
+            <label class="opcao">
+                <input type="radio" name="pagamento" value="debito">
+                <span>Cartão de Débito</span>
+            </label>
+        </div>
+        
+        <!-- Área de formulários dinâmicos -->
+        <div id="area-formularios">
+            <!-- Será preenchida pelo JavaScript -->
+        </div>
+    </main>
+
+    <script src="pagamento.js"></script>
+
+    <footer id="final">
+        <h3>Taberna do Dragão &copy; 2025</h3>
+        <h3>Contato: (44) 91234-5678</h3>
+    </footer>
+</body>
+</html>

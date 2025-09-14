@@ -88,6 +88,9 @@ app.use('/produto', produtoRoutes);
 const carrinhoRoutes = require('./routes/carrinhoRoutes');
 app.use('/carrinho', carrinhoRoutes);
 
+const pagamentoRoutes = require('./routes/pagamentoRoutes');
+app.use('/pagamento', pagamentoRoutes);
+
 const CRUDprodutoRoutes = require('./routes/CRUDprodutoRoutes.js');
 app.use('/api/produtos', CRUDprodutoRoutes);
 
