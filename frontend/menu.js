@@ -1,4 +1,4 @@
-// frontend/menu.js - Corrigido para trabalhar com a estrutura do banco
+// frontend/menu.js - Versão corrigida
 // Estado global
 let carrinho = [];
 let produtos = [];
@@ -17,11 +17,9 @@ async function inicializarPagina() {
             produtosContainer.innerHTML = '<div class="loading">Carregando cardápio...</div>';
         }
         
-        // Carrega dados em paralelo
-        await Promise.all([
-            carregarProdutos(),
-            carregarCarrinho()
-        ]);
+        // Carrega dados
+        await carregarProdutos();
+        await carregarCarrinho();
         
         // Inicializa componentes da interface
         criarBotaoCarrinho();
@@ -34,7 +32,7 @@ async function inicializarPagina() {
 
 // === FUNÇÕES DE API ===
 
-// Carrega produtos do servidor usando a rota correta
+// Carrega produtos do servidor
 async function carregarProdutos() {
     try {
         console.log('Carregando produtos de:', `${API_BASE_URL}/produto`);
@@ -63,9 +61,7 @@ async function carregarCarrinho() {
     try {
         console.log('Carregando carrinho de:', `${API_BASE_URL}/carrinho`);
         
-        const response = await fetch(`${API_BASE_URL}/carrinho`, {
-            credentials: 'include'
-        });
+        const response = await fetch(`${API_BASE_URL}/carrinho`);
         
         if (!response.ok) {
             console.warn('Carrinho não encontrado, inicializando vazio');
@@ -73,9 +69,12 @@ async function carregarCarrinho() {
             return;
         }
         
-        carrinho = await response.json();
-        if (!Array.isArray(carrinho)) {
+        const carrinhoData = await response.json();
+        
+        if (!Array.isArray(carrinhoData)) {
             carrinho = [];
+        } else {
+            carrinho = carrinhoData;
         }
         
         console.log('Carrinho carregado:', carrinho);
@@ -91,40 +90,43 @@ async function carregarCarrinho() {
 
 // Exibe produtos na tela
 function exibirProdutos(produtosLista) {
-    if (!produtosContainer) {
-        console.error('Container de produtos não encontrado');
-        return;
-    }
+  if (!produtosContainer) {
+    console.error('Container de produtos não encontrado');
+    return;
+  }
+  
+  produtosContainer.innerHTML = "";
+  
+  produtosLista.forEach(produto => {
+    const itemCarrinho = carrinho.find(item => item.produtoId == produto.id);
+    const quantidade = itemCarrinho ? itemCarrinho.quantidade : 0;
     
-    produtosContainer.innerHTML = "";
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.id = produto.id;
+
+    // Caminho da imagem
+    const imagemSrc = `img/lanche${produto.id}.png`;
     
-    produtosLista.forEach(produto => {
-        const itemCarrinho = carrinho.find(item => item.produtoId == produto.id);
-        const quantidade = itemCarrinho ? itemCarrinho.quantidade : 0;
-        
-        const card = document.createElement("div");
-        card.className = "card";
-        card.dataset.id = produto.id;
+    // CONVERTE preco para número (correção)
+    const preco = parseFloat(produto.preco);
+    
+    card.innerHTML = `
+      <img src="${imagemSrc}" alt="${produto.nome}" onerror="this.src='img/placeholder.png'">
+      <div class="card-info">
+        <h3>${produto.nome}</h3>
+        <p>${produto.ingredientes}</p>
+        <div class="quantidade">
+          <button class="btn-menos" onclick="alterarQuantidade(${produto.id}, -1)">-</button>
+          <span class="contador" id="qtd-${produto.id}">${quantidade}</span>
+          <button class="btn-mais" onclick="alterarQuantidade(${produto.id}, 1)">+</button>
+        </div>
+      </div>
+      <div class="card-preco">R$ ${preco.toFixed(2)}</div>
+    `;
 
-        // Caminho da imagem ajustado
-        const imagemSrc = `img/lanche${produto.id}.png`;
-        
-        card.innerHTML = `
-            <img src="${imagemSrc}" alt="${produto.nome}" onerror="this.src='img/placeholder.png'">
-            <div class="card-info">
-                <h3>${produto.nome}</h3>
-                <p>${produto.ingredientes}</p>
-                <div class="quantidade">
-                    <button class="btn-menos" onclick="alterarQuantidade(${produto.id}, -1)">-</button>
-                    <span class="contador" id="qtd-${produto.id}">${quantidade}</span>
-                    <button class="btn-mais" onclick="alterarQuantidade(${produto.id}, 1)">+</button>
-                </div>
-            </div>
-            <div class="card-preco">R$ ${parseFloat(produto.preco).toFixed(2)}</div>
-        `;
-
-        produtosContainer.appendChild(card);
-    });
+    produtosContainer.appendChild(card);
+  });
 }
 
 // Altera quantidade de um item no carrinho
@@ -161,7 +163,6 @@ async function alterarQuantidade(produtoId, alteracao) {
             headers: { 
                 'Content-Type': 'application/json'
             },
-            credentials: 'include',
             body: JSON.stringify({ 
                 produtoId: parseInt(produtoId), 
                 quantidade: novaQuantidade 
@@ -237,8 +238,7 @@ function mostrarErroCarregamento() {
 async function limparCarrinho() {
     try {
         const response = await fetch(`${API_BASE_URL}/carrinho`, {
-            method: 'DELETE',
-            credentials: 'include'
+            method: 'DELETE'
         });
         
         if (response.ok) {

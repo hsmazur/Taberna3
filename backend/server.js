@@ -12,8 +12,43 @@ const db = require('./database.js'); // Ajuste o caminho conforme necessário
 const HOST = 'localhost'; // Para desenvolvimento local
 const PORT_FIXA = 3001; // Porta fixa
 
-// serve a pasta frontend como arquivos estáticos
+// Middleware para permitir CORS (Cross-Origin Resource Sharing)
+// Isso é útil se você estiver fazendo requisições de um frontend que está rodando em um domínio diferente
+// ou porta do backend.
+// Em produção, você deve restringir isso para domínios específicos por segurança.
+// Aqui, estamos permitindo qualquer origem, o que é útil para desenvolvimento, mas deve ser ajustado em produção.
+// server.js - Configuração CORS COMPLETA e FUNCIONAL
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    'http://127.0.0.1:5500',
+    'http://localhost:5500', 
+    'http://127.0.0.1:5501', 
+    'http://localhost:3000', 
+    'http://localhost:3001',
+    'http://localhost:5501',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001'
+  ];
+  
+  const origin = req.headers.origin;
+  
+  // Permite qualquer origem em desenvolvimento (para testes)
+  if (process.env.NODE_ENV === 'development' || allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+  }
+  
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Expose-Headers', 'Set-Cookie');
 
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  next();
+});
 // serve a pasta frontend como arquivos estáticos
 
 const caminhoFrontend = path.join(__dirname, '../frontend');
@@ -21,31 +56,8 @@ console.log('Caminho frontend:', caminhoFrontend);
 
 app.use(express.static(caminhoFrontend));
 
-
-
 app.use(cookieParser());
 
-// Middleware para permitir CORS (Cross-Origin Resource Sharing)
-// Isso é útil se você estiver fazendo requisições de um frontend que está rodando em um domínio diferente
-// ou porta do backend.
-// Em produção, você deve restringir isso para domínios específicos por segurança.
-// Aqui, estamos permitindo qualquer origem, o que é útil para desenvolvimento, mas deve ser ajustado em produção.
-app.use((req, res, next) => {
-  const allowedOrigins = ['http://127.0.0.1:5500','http://localhost:5500', 'http://127.0.0.1:5501', 'http://localhost:3000', 'http://localhost:3001'];
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.header('Access-Control-Allow-Credentials', 'true');
-
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200); // <-- responde ao preflight
-  }
-
-  next();
-});
 
 // Middleware para adicionar a instância do banco de dados às requisições
 app.use((req, res, next) => {
