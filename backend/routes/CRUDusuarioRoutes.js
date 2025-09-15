@@ -17,6 +17,9 @@ router.get('/', CRUDusuarioController.listarUsuarios);
 // GET /api/usuarios/:id - Buscar usuário por ID
 router.get('/:id', CRUDusuarioController.buscarUsuario);
 
+// GET /api/usuarios/:id/dependencias - Verificar dependências do usuário
+router.get('/:id/dependencias', CRUDusuarioController.verificarDependencias);
+
 // POST /api/usuarios - Criar novo usuário
 router.post('/', CRUDusuarioController.criarUsuario);
 

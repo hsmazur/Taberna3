@@ -139,7 +139,7 @@ async function carregarDetalhesUsuario(idUsuario) {
             return { tipo: 'funcionario', ...funcionario };
         }
         
-        return { tipo: 'desconhecido' };
+        return { tipo: 'indefinido' };
         
     } catch (error) {
         console.error('Erro ao carregar detalhes:', error);
@@ -182,17 +182,32 @@ async function salvarUsuarioNoBanco(usuarioData) {
 }
 
 /**
- * Salva dados adicionais do usuário
+ * Salva dados adicionais do usuário (CORRIGIDO)
  */
 async function salvarDadosAdicionais(idUsuario, tipo, dados) {
     try {
         const url = tipo === 'cliente' ? CLIENTE_BASE_URL : FUNCIONARIO_BASE_URL;
-        const method = oQueEstaFazendo === 'alterando' ? 'PUT' : 'POST';
+        
+        // CORREÇÃO: Verifica se já existe registro antes de decidir o método
+        let method = 'POST'; // Padrão para criar
+        
+        if (oQueEstaFazendo === 'alterando') {
+            // Verifica se já existe o registro específico
+            const checkUrl = `${url}/usuario/${idUsuario}`;
+            const checkResponse = await fetch(checkUrl);
+            
+            if (checkResponse.ok) {
+                method = 'PUT'; // Já existe, atualiza
+            }
+            // Se não existe (404), mantém POST para criar
+        }
         
         const dadosCompletos = {
             ...dados,
             id_usuario: idUsuario
         };
+        
+        console.log(`Salvando dados adicionais - Método: ${method}, Tipo: ${tipo}`, dadosCompletos);
         
         const response = await fetch(url, {
             method: method,
@@ -204,6 +219,7 @@ async function salvarDadosAdicionais(idUsuario, tipo, dados) {
         
         if (!response.ok) {
             const errorData = await response.json();
+            console.error('Erro na resposta:', errorData);
             throw new Error(errorData.error || `Erro HTTP: ${response.status}`);
         }
         
@@ -212,6 +228,28 @@ async function salvarDadosAdicionais(idUsuario, tipo, dados) {
     } catch (error) {
         console.error('Erro ao salvar dados adicionais:', error);
         throw error;
+    }
+}
+
+/**
+ * Remove dados adicionais antigos se mudou de tipo
+ */
+async function removerTipoAnterior(idUsuario, tipoNovo, tipoAtual) {
+    try {
+        if (tipoAtual && tipoAtual !== 'indefinido' && tipoAtual !== tipoNovo) {
+            console.log(`Removendo tipo anterior: ${tipoAtual} -> ${tipoNovo}`);
+            
+            // Remove registro do tipo anterior
+            if (tipoAtual === 'cliente') {
+                const deleteUrl = `${CLIENTE_BASE_URL}/usuario/${idUsuario}`;
+                await fetch(deleteUrl, { method: 'DELETE' });
+            } else if (tipoAtual === 'funcionario') {
+                const deleteUrl = `${FUNCIONARIO_BASE_URL}/usuario/${idUsuario}`;
+                await fetch(deleteUrl, { method: 'DELETE' });
+            }
+        }
+    } catch (error) {
+        console.warn('Erro ao remover tipo anterior (não crítico):', error);
     }
 }
 
@@ -317,7 +355,7 @@ function excluir() {
 }
 
 /**
- * Salva as alterações no banco
+ * Salva as alterações no banco (CORRIGIDO)
  */
 async function salvar() {
     try {
@@ -389,14 +427,20 @@ async function inserirNoBanco(id, nome, email, senha, tipo) {
 }
 
 /**
- * Alterar usuário no banco
+ * Alterar usuário no banco (CORRIGIDO)
  */
 async function alterarNoBanco(id, nome, email, senha, tipo) {
     // Atualiza usuário básico
     const usuarioData = { id, nome, email, senha };
     await salvarUsuarioNoBanco(usuarioData);
     
-    // Atualiza dados adicionais
+    // Verifica se mudou de tipo
+    const tipoAtual = usuario && usuario.detalhes ? usuario.detalhes.tipo : 'indefinido';
+    
+    // Remove tipo anterior se mudou
+    await removerTipoAnterior(id, tipo, tipoAtual);
+    
+    // Salva dados adicionais do novo tipo
     const dadosAdicionais = obterDadosAdicionais(tipo);
     await salvarDadosAdicionais(id, tipo, dadosAdicionais);
     
@@ -471,7 +515,7 @@ function mostrarDadosUsuario(usuario) {
     document.getElementById("senha").value = usuario.senha;
     
     // Preenche tipo e dados adicionais
-    if (usuario.detalhes) {
+    if (usuario.detalhes && usuario.detalhes.tipo !== 'indefinido') {
         document.getElementById("tipo").value = usuario.detalhes.tipo;
         mostrarCamposAdicionais();
         
@@ -482,6 +526,10 @@ function mostrarDadosUsuario(usuario) {
         } else if (usuario.detalhes.tipo === 'funcionario') {
             document.getElementById("cargo").value = usuario.detalhes.cargo || 'cozinheiro';
         }
+    } else {
+        // Se não tem tipo definido, define como cliente por padrão
+        document.getElementById("tipo").value = "cliente";
+        mostrarCamposAdicionais();
     }
     
     bloquearAtributos(true);
@@ -566,7 +614,7 @@ function listar() {
             <div class="usuario-item">
                 <strong>ID: ${usuario.id}</strong> - ${usuario.nome}<br>
                 <small>Email: ${usuario.email}</small>
-                ${usuario.detalhes ? `
+                ${usuario.detalhes && usuario.detalhes.tipo !== 'indefinido' ? `
                     <div class="tipo">${usuario.detalhes.tipo.toUpperCase()}</div>
                     <div class="detalhes">
                         ${usuario.detalhes.tipo === 'cliente' ? 
@@ -575,9 +623,11 @@ function listar() {
                              Bairro: ${usuario.detalhes.bairro || 'Não informado'}`
                         : usuario.detalhes.tipo === 'funcionario' ?
                             `Cargo: ${usuario.detalhes.cargo || 'Não definido'}`
-                        : 'Tipo não definido'}
+                        : 'Dados não carregados'}
                     </div>
-                ` : ''}
+                ` : `
+                    <div class="tipo-indefinido">TIPO NÃO DEFINIDO</div>
+                `}
             </div>
         `;
     });

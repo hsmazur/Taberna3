@@ -212,7 +212,7 @@ class UsuarioController {
     }
     
     // ========================
-    // EXCLUIR USUÁRIO
+    // EXCLUIR USUÁRIO (CORRIGIDO)
     // ========================
     static async excluirUsuario(req, res) {
         try {
@@ -228,27 +228,110 @@ class UsuarioController {
                     throw new Error('Usuário não encontrado');
                 }
                 
-                // Exclui o usuário
-                const deleteSql = 'DELETE FROM usuario WHERE id_usuario = $1';
-                await client.query(deleteSql, [id]);
+                // PASSO 1: Verifica se usuário tem dados relacionados e os remove
                 
-                return existing.rows[0];
+                // Remove registro de funcionário se existir
+                const deleteFuncionarioSql = 'DELETE FROM funcionario WHERE id_usuario = $1';
+                const funcionarioResult = await client.query(deleteFuncionarioSql, [id]);
+                
+                if (funcionarioResult.rowCount > 0) {
+                    console.log(`Removido registro de funcionário para usuário ${id}`);
+                }
+                
+                // Remove registro de cliente se existir
+                const deleteClienteSql = 'DELETE FROM cliente WHERE id_usuario = $1';
+                const clienteResult = await client.query(deleteClienteSql, [id]);
+                
+                if (clienteResult.rowCount > 0) {
+                    console.log(`Removido registro de cliente para usuário ${id}`);
+                }
+                
+                // PASSO 2: Remove o usuário
+                const deleteUsuarioSql = 'DELETE FROM usuario WHERE id_usuario = $1';
+                const usuarioResult = await client.query(deleteUsuarioSql, [id]);
+                
+                if (usuarioResult.rowCount === 0) {
+                    throw new Error('Falha ao excluir usuário');
+                }
+                
+                return {
+                    usuario_removido: true,
+                    funcionario_removido: funcionarioResult.rowCount > 0,
+                    cliente_removido: clienteResult.rowCount > 0
+                };
             });
             
             res.json({ 
                 success: true, 
-                message: `Usuário ID ${id} excluído com sucesso` 
+                message: `Usuário ID ${id} excluído com sucesso`,
+                detalhes: {
+                    usuario: 'removido',
+                    funcionario: result.funcionario_removido ? 'removido' : 'não existia',
+                    cliente: result.cliente_removido ? 'removido' : 'não existia'
+                }
             });
         } catch (error) {
             console.error('Erro ao excluir usuário:', error);
+            
             if (error.message === 'Usuário não encontrado') {
-                res.status(404).json({ error: error.message });
-            } else {
-                res.status(500).json({ 
-                    error: 'Erro interno do servidor',
-                    details: error.message 
+                return res.status(404).json({ error: error.message });
+            }
+            
+            // Verifica se é erro de constraint/foreign key
+            if (error.code === '23503') {
+                return res.status(400).json({ 
+                    error: 'Não é possível excluir o usuário',
+                    message: 'Existem registros relacionados que impedem a exclusão',
+                    details: 'Remova primeiro os dados relacionados (pedidos, etc.) antes de excluir o usuário'
                 });
             }
+            
+            res.status(500).json({ 
+                error: 'Erro interno do servidor',
+                details: error.message 
+            });
+        }
+    }
+    
+    // ========================
+    // FUNÇÃO AUXILIAR: VERIFICAR DEPENDÊNCIAS
+    // ========================
+    static async verificarDependencias(req, res) {
+        try {
+            const { id } = req.params;
+            
+            const dependencias = {
+                cliente: false,
+                funcionario: false,
+                pedidos: 0,
+                outras_referencias: []
+            };
+            
+            // Verifica se é cliente
+            const clienteResult = await query(
+                'SELECT id_cliente FROM cliente WHERE id_usuario = $1', 
+                [id]
+            );
+            dependencias.cliente = clienteResult.rows.length > 0;
+            
+            // Verifica se é funcionário
+            const funcionarioResult = await query(
+                'SELECT id_funcionario FROM funcionario WHERE id_usuario = $1', 
+                [id]
+            );
+            dependencias.funcionario = funcionarioResult.rows.length > 0;
+            
+            // Verifica outras dependências que possam existir
+            // (adicione aqui outras tabelas que referenciam usuario)
+            
+            res.json(dependencias);
+            
+        } catch (error) {
+            console.error('Erro ao verificar dependências:', error);
+            res.status(500).json({ 
+                error: 'Erro ao verificar dependências',
+                details: error.message 
+            });
         }
     }
 }
