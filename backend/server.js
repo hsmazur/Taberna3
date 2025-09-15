@@ -103,6 +103,9 @@ app.use('/api/clientes', clienteRoutes);
 const funcionarioRoutes = require('./routes/funcionarioRoutes.js');
 app.use('/api/funcionarios', funcionarioRoutes);
 
+const cadastroRoutes = require('./routes/cadastroRoutes.js');
+app.use('/cadastrar', cadastroRoutes);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Rota padrão
@@ -157,14 +160,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Middleware para rotas não encontradas (404)
-app.use((req, res) => {
-  res.status(404).json({
-    error: 'Rota não encontrada',
-    message: `A rota ${req.originalUrl} não existe`,
-    timestamp: new Date().toISOString()
-  });
-});
 
 
 
@@ -176,23 +171,23 @@ const startServer = async () => {
     console.log(caminhoFrontend);
     console.log('Testando conexão com PostgreSQL...');
     const connectionTest = await db.testConnection();
-
+    
     if (!connectionTest) {
       console.error('❌ Falha na conexão com PostgreSQL');
       process.exit(1);
     }
-
+    
     console.log('✅ PostgreSQL conectado com sucesso');
-
+    
     const PORT = process.env.PORT || PORT_FIXA;
-
+    
     app.listen(PORT, () => {
       console.log(`🚀 Servidor rodando em http://${HOST}:${PORT}`);
       console.log(`📊 Health check disponível em http://${HOST}:${PORT}/health`);
       console.log(`🗄️ Banco de dados: PostgreSQL`);
       console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
     });
-
+    
   } catch (error) {
     console.error('❌ Erro ao iniciar o servidor:', error);
     process.exit(1);
@@ -202,7 +197,7 @@ const startServer = async () => {
 // Tratamento de sinais para encerramento graceful
 process.on('SIGINT', async () => {
   console.log('\n🔄 Encerrando servidor...');
-
+  
   try {
     await db.pool.end();
     console.log('✅ Conexões com PostgreSQL encerradas');
@@ -215,7 +210,7 @@ process.on('SIGINT', async () => {
 
 process.on('SIGTERM', async () => {
   console.log('\n🔄 SIGTERM recebido, encerrando servidor...');
-
+  
   try {
     await db.pool.end();
     console.log('✅ Conexões com PostgreSQL encerradas');
@@ -224,6 +219,15 @@ process.on('SIGTERM', async () => {
     console.error('❌ Erro ao encerrar conexões:', error);
     process.exit(1);
   }
+});
+
+// Middleware para rotas não encontradas (404)
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Rota não encontrada',
+    message: `A rota ${req.originalUrl} não existe`,
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Iniciar o servidor

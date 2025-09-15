@@ -1,0 +1,141 @@
+/* Container Principal */
+.container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: rgba(255, 253, 245, 0.9);
+    border: 2px solid #3a3226;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(58, 50, 38, 0.4);
+}
+
+.container h1 {
+    font-size: 2rem;
+    text-align: center;
+    color: #1a120b;
+    border-bottom: 2px solid #d4a76a;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Formulário */
+#form-cadastro {
+    margin-top: 2rem;
+}
+
+.grupo-input {
+    margin-bottom: 1.5rem;
+}
+
+.grupo-input label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color: #1a120b;
+}
+
+.grupo-input input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #d4a76a;
+    border-radius: 4px;
+    background-color: #fff;
+    font-family: 'MedievalSharp', cursive;
+    font-size: 1rem;
+}
+
+.grupo-input input:focus {
+    outline: 2px solid #3a3226;
+}
+
+.grupo-input small {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.8rem;
+    color: #5c4d3d;
+}
+
+/* Botão */
+.botao-cadastro {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background-color: #1a120b;
+    color: #d4a76a;
+    border: 2px solid #d4a76a;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1.5rem;
+}
+
+.botao-cadastro:hover {
+    background-color: #d4a76a;
+    color: #1a120b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Link de Login */
+.login-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+}
+
+.login-link a {
+    color: #8b0000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* Mensagens de Erro */
+.mensagem-erro {
+    color: #8b0000;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    display: block;
+}
+/* Estilo para o grupo de input de senha */
+.input-senha {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-senha input {
+    padding-right: 40px; /* Espaço para o botão */
+}
+
+.botao-visualizar {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.botao-visualizar img {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
+    transition: all 0.3s;
+}
+
+.botao-visualizar:hover img {
+    transform: scale(1.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+}
