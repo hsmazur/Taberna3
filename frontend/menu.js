@@ -1,7 +1,8 @@
-// frontend/menu.js - Versão corrigida
+// frontend/menu.js - Versão corrigida com autenticação
 // Estado global
 let carrinho = [];
 let produtos = [];
+let usuarioLogado = null;
 
 // Configuração da API
 const API_BASE_URL = 'http://localhost:3001';
@@ -17,6 +18,9 @@ async function inicializarPagina() {
             produtosContainer.innerHTML = '<div class="loading">Carregando cardápio...</div>';
         }
         
+        // Verifica se usuário está logado
+        await verificarUsuarioLogado();
+        
         // Carrega dados
         await carregarProdutos();
         await carregarCarrinho();
@@ -27,6 +31,96 @@ async function inicializarPagina() {
     } catch (error) {
         console.error("Erro na inicialização:", error);
         mostrarErroCarregamento();
+    }
+}
+
+// === FUNÇÕES DE AUTENTICAÇÃO ===
+
+// Verifica se o usuário está logado
+async function verificarUsuarioLogado() {
+    try {
+        // Primeiro tenta verificar no localStorage (para compatibilidade)
+        const usuarioLocal = localStorage.getItem('usuario');
+        if (usuarioLocal) {
+            usuarioLogado = JSON.parse(usuarioLocal);
+            atualizarInterfaceUsuario();
+            return;
+        }
+
+        // Tenta verificar via cookie no servidor
+        const response = await fetch(`${API_BASE_URL}/login/usuario`, {
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.usuario) {
+                usuarioLogado = data.usuario;
+                // Sincroniza com localStorage
+                localStorage.setItem('usuario', JSON.stringify(usuarioLogado));
+                atualizarInterfaceUsuario();
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao verificar usuário:', error);
+        // Mantém interface como deslogado em caso de erro
+        usuarioLogado = null;
+        atualizarInterfaceUsuario();
+    }
+}
+
+// Atualiza a interface baseada no status do usuário
+function atualizarInterfaceUsuario() {
+    const usuarioLogadoDiv = document.getElementById('usuario-logado');
+    const usuarioDeslogadoDiv = document.getElementById('usuario-deslogado');
+    const nomeUsuarioSpan = document.getElementById('nome-usuario');
+    const logoutBtn = document.getElementById('logout');
+
+    if (usuarioLogado) {
+        // Usuário está logado
+        if (usuarioLogadoDiv) usuarioLogadoDiv.style.display = 'block';
+        if (usuarioDeslogadoDiv) usuarioDeslogadoDiv.style.display = 'none';
+        if (nomeUsuarioSpan) nomeUsuarioSpan.textContent = `Bem-vindo, ${usuarioLogado.nome}!`;
+        
+        // Configura evento de logout
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', realizarLogout);
+        }
+    } else {
+        // Usuário não está logado
+        if (usuarioLogadoDiv) usuarioLogadoDiv.style.display = 'none';
+        if (usuarioDeslogadoDiv) usuarioDeslogadoDiv.style.display = 'block';
+    }
+}
+
+// Realiza o logout
+async function realizarLogout(event) {
+    event.preventDefault();
+    
+    try {
+        // Remove do localStorage
+        localStorage.removeItem('usuario');
+        
+        // Chama endpoint de logout no servidor
+        await fetch(`${API_BASE_URL}/login/logout`, {
+            method: 'POST',
+            credentials: 'include'
+        });
+        
+        // Atualiza estado local
+        usuarioLogado = null;
+        
+        // Atualiza interface
+        atualizarInterfaceUsuario();
+        
+        alert('Logout realizado com sucesso!');
+        
+    } catch (error) {
+        console.error('Erro no logout:', error);
+        // Mesmo em caso de erro, limpa o estado local
+        usuarioLogado = null;
+        atualizarInterfaceUsuario();
+        alert('Logout realizado localmente.');
     }
 }
 
@@ -222,7 +316,7 @@ function mostrarErroCarregamento() {
     if (produtosContainer) {
         produtosContainer.innerHTML = `
             <div class="error">
-                <p>❌ Falha ao carregar o cardápio</p>
+                <p>⚠ Falha ao carregar o cardápio</p>
                 <p>Verifique se o servidor está rodando na porta 3001</p>
                 <button onclick="inicializarPagina()" style="margin-top: 10px; padding: 8px 16px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
                     🔄 Tentar novamente
@@ -286,6 +380,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 window.debugMenu = {
     carrinho: () => console.log('Carrinho atual:', carrinho),
     produtos: () => console.log('Produtos carregados:', produtos),
+    usuario: () => console.log('Usuário logado:', usuarioLogado),
     recarregar: () => location.reload(),
-    limparCarrinho: limparCarrinho
+    limparCarrinho: limparCarrinho,
+    logout: realizarLogout
 };
