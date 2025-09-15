@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Taberna do Dragão</title>
+    <link rel="stylesheet" href="../universal.css">
+    <link rel="stylesheet" href="login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Cabeçalho Igual às Outras Páginas -->
+    <header id="header"> 
+        <img id="logo" src="../img/logo.png" alt="Taberna do Dragão">
+        <div>
+            <h1>Taberna do Dragão</h1>
+            <h2>Alimentando o reino desde 2025!</h2>
+        </div>
+    </header>
+    <header id="header2">
+        <h3>Rua Zézinho da Silva, 123 - Centro</h3>
+    </header>
+
+    <main class="container">
+        <h1>Acesse Seu Reino</h1>
+        <form id="form-login">
+            <div class="grupo-input">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required placeholder="cavaleiro@reino.com">
+                <span id="erro-email" class="mensagem-erro"></span>
+            </div>
+            
+            <div class="grupo-input">
+                <label for="senha">Senha</label>
+                <div class="input-senha">
+                    <input type="password" id="senha" name="senha" required placeholder="••••••••">
+                    <button type="button" class="botao-visualizar" data-target="senha">
+                        <img src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png" alt="Visualizar senha">
+                    </button>
+                </div>
+                <span id="erro-senha" class="mensagem-erro"></span>
+            </div>
+            
+            <button type="submit" class="botao-login">Entrar na Taberna</button>
+            
+            <div class="cadastro-link">
+                Novo no reino? <a href="../cadastros/cadastro.html">Crie sua conta</a>
+            </div>
+        </form>
+    </main>
+
+    <!-- Rodapé Igual às Outras Páginas -->
+    <footer id="final">
+        <h3>Taberna do Dragão &copy; 2025</h3>
+        <h3>Contato: (44) 91234-5678</h3>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('form-login');
+            const erroSenha = document.getElementById('erro-senha');
+            const erroEmail = document.getElementById('erro-email');
+
+            // Visualização de senha
+            document.querySelectorAll('.botao-visualizar').forEach(botao => {
+                botao.addEventListener('click', (e) => {
+                    const targetId = e.currentTarget.getAttribute('data-target');
+                    const inputSenha = document.getElementById(targetId);
+                    const img = e.currentTarget.querySelector('img');
+            
+                    if (inputSenha.type === 'password') {
+                        inputSenha.type = 'text';
+                        img.src = 'https://cdn-icons-png.flaticon.com/128/709/709612.png';
+                        img.alt = 'Ocultar senha';
+                    } else {
+                        inputSenha.type = 'password';
+                        img.src = 'https://cdn-icons-png.flaticon.com/128/2767/2767146.png';
+                        img.alt = 'Visualizar senha';
+                    }
+                });
+            });
+
+            // Validação de e-mail
+            const emailInput = document.getElementById('email');
+            emailInput.addEventListener('input', validarEmail);
+
+            function validarEmail() {
+                const email = emailInput.value;
+                const regexEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+        
+                if (email === '') {
+                    erroEmail.textContent = '';
+                    return false;
+                }
+        
+                if (!regexEmail.test(email)) {
+                    erroEmail.textContent = 'Por favor, insira um e-mail válido';
+                    return false;
+                }
+        
+                erroEmail.textContent = '';
+                return true;
+            }
+
+            // Validação no submit
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+        
+                if (!validarEmail()) {
+                    return;
+                }
+        
+                if (document.getElementById('senha').value.length < 8) {
+                    erroSenha.textContent = 'A senha deve ter no mínimo 8 caracteres';
+                    return;
+                }
+        
+                erroSenha.textContent = '';
+                alert('Login realizado com sucesso! Bem-vindo de volta à Taberna!');
+                // form.submit(); // Descomente para enviar o formulário
+            });
+        });
+    </script>
+    <script src="login.js"></script>
+</body>
+</html>
