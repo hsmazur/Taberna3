@@ -274,10 +274,82 @@ function validarTelefone(e) {
 }
 
 /**
+ * Verifica se o usuário é cliente e cria/atualiza se necessário
+ */
+async function verificarECriarCliente(usuarioId, dadosCliente) {
+  try {
+    // Primeiro verifica se o usuário já é cliente
+    const responseCliente = await fetch(`${API_URL}/api/clientes/usuario/${usuarioId}`);
+    
+    if (responseCliente.status === 404) {
+      // Não é cliente - verifica se é funcionário
+      const responseFuncionario = await fetch(`${API_URL}/api/funcionarios/usuario/${usuarioId}`);
+      
+      if (responseFuncionario.status === 404) {
+        // Não é cliente nem funcionário - cria novo cliente
+        console.log('Criando novo cliente para usuário:', usuarioId);
+        
+        const criarResponse = await fetch(`${API_URL}/api/clientes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id_usuario: usuarioId,
+            telefone: dadosCliente.telefone,
+            endereco: dadosCliente.endereco,
+            bairro: dadosCliente.bairro
+          })
+        });
+
+        if (!criarResponse.ok) {
+          throw new Error('Erro ao criar cliente');
+        }
+
+        console.log('Cliente criado com sucesso');
+      } else if (responseFuncionario.ok) {
+        // É funcionário - não pode ser cliente também
+        console.log('Usuário é funcionário, não pode ser cliente');
+        // Pode decidir como tratar - talvez apenas usar os dados para esta entrega
+      }
+    } else if (responseCliente.ok) {
+      // Já é cliente - pode atualizar os dados se quiser
+      console.log('Usuário já é cliente');
+      
+      const atualizarResponse = await fetch(`${API_URL}/api/clientes`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_usuario: usuarioId,
+          telefone: dadosCliente.telefone,
+          endereco: dadosCliente.endereco,
+          bairro: dadosCliente.bairro
+        })
+      });
+
+      if (!atualizarResponse.ok) {
+        console.warn('Não foi possível atualizar dados do cliente');
+      }
+    }
+  } catch (error) {
+    console.error('Erro ao verificar/criar cliente:', error);
+    throw error;
+  }
+}
+
+/**
  * Confirma o pedido e redireciona para pagamento
  */
-// frontend/carrinho.js - CORREÇÃO na função confirmarPedido()
-async function confirmarPedido() {
+async function confirmarPedido(event) {
+  if (event) event.preventDefault(); // impede o <a> de redirecionar sozinho
+
+  // Verifica se o usuário está logado
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuario'));
+  
+  if (!usuarioLogado) {
+    alert('Você precisa estar logado para finalizar o pedido!');
+    window.location.href = '../login/login.html';
+    return;
+  }
+
   const isEntrega = document.querySelector('input[name="tipo-entrega"]:checked')?.value === 'entrega';
   
   if (isEntrega) {
@@ -298,6 +370,15 @@ async function confirmarPedido() {
       return;
     }
 
+    // Verifica e cria/atualiza o cliente
+    try {
+      await verificarECriarCliente(usuarioLogado.id, { telefone, endereco, bairro });
+    } catch (error) {
+      console.error('Erro ao processar dados do cliente:', error);
+      alert('Erro ao processar seus dados. Tente novamente.');
+      return;
+    }
+
     // Armazena os dados de entrega no localStorage
     localStorage.setItem('dadosEntrega', JSON.stringify({
       nome,
@@ -312,7 +393,7 @@ async function confirmarPedido() {
     }));
   }
 
-  // Calcula o total com taxa (CORRIGIDO - converter preço para número)
+  // Calcula o total com taxa
   let total = carrinhoItens.reduce((total, item) => {
     const produto = produtosDisponiveis.find(p => p.id == item.produtoId);
     return total + (produto ? parseFloat(produto.preco) * item.quantidade : 0);
@@ -324,7 +405,28 @@ async function confirmarPedido() {
   localStorage.setItem('totalPedido', total.toFixed(2));
 
   // Redireciona para a página de pagamento
-  window.location.href = 'pagamento.html';
+  window.location.href = '../pagamento/pagamento.html';
+}
+
+
+/**
+ * Verifica o status do usuário (cliente, funcionário ou nenhum)
+ */
+async function verificarStatusUsuario(usuarioId) {
+  try {
+    const [clienteResponse, funcionarioResponse] = await Promise.all([
+      fetch(`${API_URL}/api/clientes/usuario/${usuarioId}`),
+      fetch(`${API_URL}/api/funcionarios/usuario/${usuarioId}`)
+    ]);
+
+    if (clienteResponse.ok) return 'cliente';
+    if (funcionarioResponse.ok) return 'funcionario';
+    return 'usuario'; // Apenas usuário básico
+    
+  } catch (error) {
+    console.error('Erro ao verificar status do usuário:', error);
+    return 'erro';
+  }
 }
 
 // Funções auxiliares de UI

@@ -22,11 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             console.log('Enviando dados:', { nome, email, senha: '***' });
             
-            // 1. Faz o cadastro
+            // 1. Faz o cadastro (apenas com dados básicos)
             const cadastroResponse = await fetch('http://localhost:3001/cadastrar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, email, senha }),
+                body: JSON.stringify({ 
+                    nome, 
+                    email, 
+                    senha 
+                    // Os outros campos (telefone, endereco, bairro, tipo) serão null/undefined
+                    // O backend vai tratar como padrão 'cliente' e campos opcionais
+                }),
                 credentials: 'include'
             });
 
@@ -39,9 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(cadastroData.message || `Erro HTTP: ${cadastroResponse.status}`);
             }
 
+            // Salva os dados do usuário no localStorage para manter a sessão
+            localStorage.setItem('usuario', JSON.stringify({
+                id: cadastroData.usuario.id,
+                nome: cadastroData.usuario.nome,
+                email: cadastroData.usuario.email,
+                tipo: cadastroData.usuario.tipo
+            }));
+
             alert(`Cadastro realizado com sucesso!\nBem-vindo, ${cadastroData.usuario.nome}!`);
 
-            // Para teste, vamos apenas redirecionar para index sem fazer login automático
+            // Redireciona para a página principal já logado
             window.location.href = '../menu.html';
 
         } catch (error) {
