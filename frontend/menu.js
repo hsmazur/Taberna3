@@ -27,6 +27,7 @@ async function inicializarPagina() {
         
         // Inicializa componentes da interface
         criarBotaoCarrinho();
+        atualizarLinkAvaliacoes(); // ← Adicione esta linha
         
     } catch (error) {
         console.error("Erro na inicialização:", error);
@@ -94,6 +95,9 @@ function atualizarInterfaceUsuario() {
         if (usuarioLogadoDiv) usuarioLogadoDiv.style.display = 'none';
         if (usuarioDeslogadoDiv) usuarioDeslogadoDiv.style.display = 'block';
     }
+    
+    // Atualiza a visibilidade do link de avaliações
+    atualizarLinkAvaliacoes();
 }
 
 // Realiza o logout
@@ -177,6 +181,21 @@ function atualizarPainelAdministrativo() {
     } else {
         // Oculta o painel administrativo para clientes e usuários não logados
         if (adminPanel) adminPanel.style.display = 'none';
+    }
+}
+
+// Função para mostrar/ocultar link de avaliações
+function atualizarLinkAvaliacoes() {
+    const linkAvaliacoes = document.getElementById('link-avaliacoes');
+    
+    if (linkAvaliacoes) {
+        if (usuarioLogado) {
+            // Usuário está logado, mostra o link
+            linkAvaliacoes.style.display = 'block';
+        } else {
+            // Usuário não está logado, oculta o link
+            linkAvaliacoes.style.display = 'none';
+        }
     }
 }
 
@@ -364,7 +383,261 @@ function criarBotaoCarrinho() {
         `;
     }
 }
+// === FUNÇÕES DO BANNER DO MELHOR LANCHE ===
 
+// Busca o lanche mais bem avaliado
+async function carregarLancheMaisAvaliado() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/avaliacoes/melhor-lanche`);
+        
+        if (!response.ok) {
+            console.warn('Não foi possível carregar o lanche mais avaliado');
+            return null;
+        }
+        
+        const melhorLanche = await response.json();
+        return melhorLanche;
+        
+    } catch (error) {
+        console.error('Erro ao carregar lanche mais avaliado:', error);
+        return null;
+    }
+}
+
+// Exibe o banner do lanche mais bem avaliado
+async function exibirBannerMelhorLanche() {
+    const banner = document.getElementById('banner-melhor-lanche');
+    if (!banner) return;
+    
+    const melhorLanche = await carregarLancheMaisAvaliado();
+    
+    if (!melhorLanche || !melhorLanche.produto) {
+        banner.style.display = 'none';
+        return;
+    }
+    
+    // Preenche os dados do banner
+    document.getElementById('banner-nome-lanche').textContent = melhorLanche.produto.nome;
+    document.getElementById('banner-descricao').textContent = melhorLanche.produto.ingredientes;
+    document.getElementById('banner-preco-texto').textContent = `R$ ${parseFloat(melhorLanche.produto.preco).toFixed(2)}`;
+    document.getElementById('banner-avaliacao').textContent = `${melhorLanche.media.toFixed(1)} (${melhorLanche.total_avaliacoes} avaliações)`;
+    
+    // Configura a imagem
+    const imagem = document.getElementById('banner-imagem');
+    imagem.src = `img/lanche${melhorLanche.produto.id}.png`;
+    imagem.alt = melhorLanche.produto.nome;
+    imagem.onerror = function() {
+        this.src = 'img/placeholder.png';
+    };
+    
+    // Configura as estrelas
+    atualizarEstrelasBanner(melhorLanche.media);
+    
+    // Configura o botão de comprar
+    const btnComprar = document.getElementById('banner-btn-comprar');
+    btnComprar.onclick = () => adicionarMelhorLancheAoCarrinho(melhorLanche.produto.id);
+    
+    // Mostra o banner
+    banner.style.display = 'block';
+}
+
+// Atualiza as estrelas do banner baseado na avaliação
+function atualizarEstrelasBanner(notaMedia) {
+    const estrelas = document.querySelectorAll('.banner-rating .estrelas .fas');
+    const estrelasCheias = Math.round(notaMedia);
+    
+    estrelas.forEach((estrela, index) => {
+        if (index < estrelasCheias) {
+            estrela.className = 'fas fa-star';
+        } else {
+            estrela.className = 'far fa-star';
+        }
+    });
+}
+
+// Adiciona o melhor lanche ao carrinho
+async function adicionarMelhorLancheAoCarrinho(produtoId) {
+    try {
+        // Encontra o produto na lista
+        const produto = produtos.find(p => p.id == produtoId);
+        if (!produto) {
+            alert('Produto não encontrado!');
+            return;
+        }
+        
+        // Adiciona ao carrinho
+        await alterarQuantidade(produtoId, 1);
+        
+        // Feedback visual
+        const btnComprar = document.getElementById('banner-btn-comprar');
+        btnComprar.innerHTML = '✅ Adicionado!';
+        btnComprar.style.backgroundColor = '#2E7D32';
+        
+        setTimeout(() => {
+            btnComprar.innerHTML = '🛒 Comprar Agora';
+            btnComprar.style.backgroundColor = '';
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Erro ao adicionar ao carrinho:', error);
+        alert('Erro ao adicionar produto ao carrinho');
+    }
+}
+
+// E atualize a função inicializarPagina para incluir o banner:
+async function inicializarPagina() {
+    try {
+        // Mostra estado de carregamento
+        if (produtosContainer) {
+            produtosContainer.innerHTML = '<div class="loading">Carregando cardápio...</div>';
+        }
+        
+        // Verifica se usuário está logado
+        await verificarUsuarioLogado();
+        
+        // Carrega dados
+        await carregarProdutos();
+        await carregarCarrinho();
+        
+        // Inicializa componentes da interface
+        criarBotaoCarrinho();
+        atualizarLinkAvaliacoes();
+        
+        // Carrega e exibe o banner do melhor lanche
+        await exibirBannerMelhorLanche();
+        
+    } catch (error) {
+        console.error("Erro na inicialização:", error);
+        mostrarErroCarregamento();
+    }
+}// === FUNÇÕES DO BANNER DO MELHOR LANCHE ===
+
+// Busca o lanche mais bem avaliado
+async function carregarLancheMaisAvaliado() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/avaliacoes/melhor-lanche`);
+        
+        if (!response.ok) {
+            console.warn('Não foi possível carregar o lanche mais avaliado');
+            return null;
+        }
+        
+        const melhorLanche = await response.json();
+        return melhorLanche;
+        
+    } catch (error) {
+        console.error('Erro ao carregar lanche mais avaliado:', error);
+        return null;
+    }
+}
+
+// Exibe o banner do lanche mais bem avaliado
+async function exibirBannerMelhorLanche() {
+    const banner = document.getElementById('banner-melhor-lanche');
+    if (!banner) return;
+    
+    const melhorLanche = await carregarLancheMaisAvaliado();
+    
+    if (!melhorLanche || !melhorLanche.produto) {
+        banner.style.display = 'none';
+        return;
+    }
+    
+    // Preenche os dados do banner
+    document.getElementById('banner-nome-lanche').textContent = melhorLanche.produto.nome;
+    document.getElementById('banner-descricao').textContent = melhorLanche.produto.ingredientes;
+    document.getElementById('banner-preco-texto').textContent = `R$ ${parseFloat(melhorLanche.produto.preco).toFixed(2)}`;
+    document.getElementById('banner-avaliacao').textContent = `${melhorLanche.media.toFixed(1)} (${melhorLanche.total_avaliacoes} avaliações)`;
+    
+    // Configura a imagem
+    const imagem = document.getElementById('banner-imagem');
+    imagem.src = `img/lanche${melhorLanche.produto.id}.png`;
+    imagem.alt = melhorLanche.produto.nome;
+    imagem.onerror = function() {
+        this.src = 'img/placeholder.png';
+    };
+    
+    // Configura as estrelas
+    atualizarEstrelasBanner(melhorLanche.media);
+    
+    // Configura o botão de comprar
+    const btnComprar = document.getElementById('banner-btn-comprar');
+    btnComprar.onclick = () => adicionarMelhorLancheAoCarrinho(melhorLanche.produto.id);
+    
+    // Mostra o banner
+    banner.style.display = 'block';
+}
+
+// Atualiza as estrelas do banner baseado na avaliação
+function atualizarEstrelasBanner(notaMedia) {
+    const estrelas = document.querySelectorAll('.banner-rating .estrelas .fas');
+    const estrelasCheias = Math.round(notaMedia);
+    
+    estrelas.forEach((estrela, index) => {
+        if (index < estrelasCheias) {
+            estrela.className = 'fas fa-star';
+        } else {
+            estrela.className = 'far fa-star';
+        }
+    });
+}
+
+// Adiciona o melhor lanche ao carrinho
+async function adicionarMelhorLancheAoCarrinho(produtoId) {
+    try {
+        // Encontra o produto na lista
+        const produto = produtos.find(p => p.id == produtoId);
+        if (!produto) {
+            alert('Produto não encontrado!');
+            return;
+        }
+        
+        // Adiciona ao carrinho
+        await alterarQuantidade(produtoId, 1);
+        
+        // Feedback visual
+        const btnComprar = document.getElementById('banner-btn-comprar');
+        btnComprar.innerHTML = '✅ Adicionado!';
+        btnComprar.style.backgroundColor = '#2E7D32';
+        
+        setTimeout(() => {
+            btnComprar.innerHTML = '🛒 Comprar Agora';
+            btnComprar.style.backgroundColor = '';
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Erro ao adicionar ao carrinho:', error);
+        alert('Erro ao adicionar produto ao carrinho');
+    }
+}
+
+// E atualize a função inicializarPagina para incluir o banner:
+async function inicializarPagina() {
+    try {
+        // Mostra estado de carregamento
+        if (produtosContainer) {
+            produtosContainer.innerHTML = '<div class="loading">Carregando cardápio...</div>';
+        }
+        
+        // Verifica se usuário está logado
+        await verificarUsuarioLogado();
+        
+        // Carrega dados
+        await carregarProdutos();
+        await carregarCarrinho();
+        
+        // Inicializa componentes da interface
+        criarBotaoCarrinho();
+        atualizarLinkAvaliacoes();
+        
+        // Carrega e exibe o banner do melhor lanche
+        await exibirBannerMelhorLanche();
+        
+    } catch (error) {
+        console.error("Erro na inicialização:", error);
+        mostrarErroCarregamento();
+    }
+}
 // === FUNÇÕES DE ERRO ===
 
 // Mostra erro de carregamento
@@ -441,43 +714,3 @@ window.debugMenu = {
     limparCarrinho: limparCarrinho,
     logout: realizarLogout
 };
-// Função de debug detalhada - adicione ao menu.js
-async function debugDetalhado() {
-    try {
-        console.log('=== DEBUG DETALHADO ===');
-        
-        // Verifica o localStorage
-        const usuarioLocal = localStorage.getItem('usuario');
-        console.log('LocalStorage:', usuarioLocal ? JSON.parse(usuarioLocal) : 'Nenhum usuário no localStorage');
-        
-        // Verifica a API
-        const response = await fetch(`${API_BASE_URL}/login/usuario`, {
-            credentials: 'include'
-        });
-        
-        console.log('Status da API:', response.status);
-        
-        if (response.ok) {
-            const data = await response.json();
-            console.log('Resposta completa da API:', data);
-            
-            if (data.success && data.usuario) {
-                console.log('Dados do usuário:', data.usuario);
-                console.log('Tipo:', data.usuario.tipo);
-                console.log('Todos os campos:', Object.keys(data.usuario));
-                
-                // Verifica se há campo cargo
-                if (data.usuario.cargo) {
-                    console.log('Cargo:', data.usuario.cargo);
-                }
-            }
-        }
-        
-        console.log('=== FIM DEBUG ===');
-    } catch (error) {
-        console.error('Erro no debug:', error);
-    }
-}
-
-// Chame esta função após o login
-// debugDetalhado();

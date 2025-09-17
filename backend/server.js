@@ -112,6 +112,9 @@ app.use('/login', loginRoutes);
 const pedidoRoutes = require('./routes/pedidoRoutes');
 app.use('/api/pedidos', pedidoRoutes);
 
+const avaliacaoRoutes = require('./routes/avaliacaoRoutes');
+app.use('/api/avaliacoes', avaliacaoRoutes);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Rota padrão

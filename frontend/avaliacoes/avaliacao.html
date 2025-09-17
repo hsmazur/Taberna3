@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliações - Taberna do Dragão</title>
+    <link rel="stylesheet" href="../universal.css">
+    <link rel="stylesheet" href="avaliacao.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header id="header"> 
+        <img id="logo" src="../img/logo.png" alt="Taberna do Dragão">
+        <div>
+            <h1>Avaliações</h1>
+            <h2>Taberna do Dragão</h2>
+        </div>
+    </header>
+    <header id="header2">
+        <h3>Compartilhe sua experiência</h3>
+    </header>
+
+    <main class="avaliacao-container">
+        <div class="avaliacao-lista">
+            <h3>Lanches que você consumiu</h3>
+            <div class="lista-produtos">
+                <div class="produto-item" data-id="1">
+                    <img src="../img/lanche1.png" alt="Hambúrguer Medieval">
+                    <div class="produto-info">
+                        <strong>Hambúrguer Medieval</strong>
+                        <small>Carne, queijo, alface, tomate</small>
+                        <span class="preco">R$ 25,90</span>
+                    </div>
+                </div>
+                
+                <div class="produto-item" data-id="2">
+                    <img src="../img/lanche2.png" alt="Sanduíque do Dragão">
+                    <div class="produto-info">
+                        <strong>Sanduíque do Dragão</strong>
+                        <small>Frango, bacon, molho especial</small>
+                        <span class="preco">R$ 22,50</span>
+                    </div>
+                </div>
+                
+                <div class="produto-item" data-id="3">
+                    <img src="../img/lanche3.png" alt="Torre de Carne">
+                    <div class="produto-info">
+                        <strong>Torre de Carne</strong>
+                        <small>Tripo hambúrguer, queijos</small>
+                        <span class="preco">R$ 35,00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="avaliacao-form">
+            <h3>Avalie este lanche</h3>
+            <div id="selecionado-info" class="selecionado-info" style="display: none;">
+                <img id="selecionado-imagem" src="" alt="">
+                <div>
+                    <strong id="selecionado-nome"></strong>
+                    <small id="selecionado-ingredientes"></small>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Sua avaliação:</label>
+                <div class="estrelas-avaliacao">
+                    <i class="fa-solid fa-star" data-nota="1"></i>
+                    <i class="fa-solid fa-star" data-nota="2"></i>
+                    <i class="fa-solid fa-star" data-nota="3"></i>
+                    <i class="fa-solid fa-star" data-nota="4"></i>
+                    <i class="fa-solid fa-star" data-nota="5"></i>
+                </div>
+                <input type="hidden" id="nota" name="nota" value="0">
+                <small id="texto-nota">Selecione uma nota</small>
+            </div>
+
+            <div class="form-group">
+                <label for="comentario">Seu comentário:</label>
+                <textarea id="comentario" name="comentario" class="crud-input" rows="5" placeholder="Conte-nos o que achou deste lanche..." readonly></textarea>
+            </div>
+
+            <div class="button-group">
+                <button id="btEnviar" class="btn medieval-btn-success" disabled>Enviar Avaliação</button>
+                <button id="btCancelar" class="btn medieval-btn-cancel">Cancelar</button>
+            </div>
+            
+            <div id="divAviso" class="aviso"></div>
+        </div>
+    </main>
+    
+    <footer id="final">
+        <a href="../menu.html" class="btn medieval-btn">Voltar ao Site</a>
+        <br><br>
+        <h3>Taberna do Dragão &copy; 2025</h3>
+    </footer>
+
+    <script src="avaliacao.js"></script>
+</body>
+</html>
