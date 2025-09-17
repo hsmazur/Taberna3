@@ -1,4 +1,4 @@
-// frontend/menu.js - Versão corrigida com autenticação
+// frontend/menu.js - Versão corrigida com autenticação e controle de acesso
 // Estado global
 let carrinho = [];
 let produtos = [];
@@ -44,6 +44,7 @@ async function verificarUsuarioLogado() {
         if (usuarioLocal) {
             usuarioLogado = JSON.parse(usuarioLocal);
             atualizarInterfaceUsuario();
+            atualizarPainelAdministrativo();
             return;
         }
 
@@ -59,6 +60,7 @@ async function verificarUsuarioLogado() {
                 // Sincroniza com localStorage
                 localStorage.setItem('usuario', JSON.stringify(usuarioLogado));
                 atualizarInterfaceUsuario();
+                atualizarPainelAdministrativo();
             }
         }
     } catch (error) {
@@ -66,6 +68,7 @@ async function verificarUsuarioLogado() {
         // Mantém interface como deslogado em caso de erro
         usuarioLogado = null;
         atualizarInterfaceUsuario();
+        atualizarPainelAdministrativo();
     }
 }
 
@@ -112,6 +115,7 @@ async function realizarLogout(event) {
         
         // Atualiza interface
         atualizarInterfaceUsuario();
+        atualizarPainelAdministrativo();
         
         alert('Logout realizado com sucesso!');
         
@@ -120,7 +124,59 @@ async function realizarLogout(event) {
         // Mesmo em caso de erro, limpa o estado local
         usuarioLogado = null;
         atualizarInterfaceUsuario();
+        atualizarPainelAdministrativo();
         alert('Logout realizado localmente.');
+    }
+}
+
+// === FUNÇÕES DE CONTROLE DE ACESSO ===
+
+// Função para verificar permissões do usuário
+function verificarPermissoesUsuario(usuario) {
+    if (!usuario || !usuario.tipo) return false;
+    
+    // Funcionários e gerentes têm acesso aos recursos administrativos
+    return ['funcionario', 'gerente'].includes(usuario.tipo.toLowerCase());
+}
+
+// Função para verificar se é gerente
+function isGerente(usuario) {
+    if (!usuario) return false;
+    
+    // Primeiro tenta pelo tipo
+    if (usuario.tipo && usuario.tipo.toLowerCase() === 'gerente') {
+        return true;
+    }
+    
+    // Depois tenta pelo cargo (se existir)
+    if (usuario.cargo && usuario.cargo.toLowerCase() === 'gerente') {
+        return true;
+    }
+    
+    // Verificações alternativas
+    const nome = usuario.nome || '';
+    const email = usuario.email || '';
+    
+    return nome.toLowerCase().includes('gerente') || 
+           email.toLowerCase().includes('gerente');
+}
+
+// Função para mostrar/ocultar painel administrativo
+function atualizarPainelAdministrativo() {
+    const adminPanel = document.getElementById('admin-panel');
+    const botoesGerente = document.querySelectorAll('.gerente-only');
+    
+    if (usuarioLogado && verificarPermissoesUsuario(usuarioLogado)) {
+        // Mostra o painel administrativo para funcionários e gerentes
+        if (adminPanel) adminPanel.style.display = 'block';
+        
+        // Mostra ou oculta botões de gerente
+        botoesGerente.forEach(botao => {
+            botao.style.display = isGerente(usuarioLogado) ? 'inline-block' : 'none';
+        });
+    } else {
+        // Oculta o painel administrativo para clientes e usuários não logados
+        if (adminPanel) adminPanel.style.display = 'none';
     }
 }
 
@@ -385,3 +441,43 @@ window.debugMenu = {
     limparCarrinho: limparCarrinho,
     logout: realizarLogout
 };
+// Função de debug detalhada - adicione ao menu.js
+async function debugDetalhado() {
+    try {
+        console.log('=== DEBUG DETALHADO ===');
+        
+        // Verifica o localStorage
+        const usuarioLocal = localStorage.getItem('usuario');
+        console.log('LocalStorage:', usuarioLocal ? JSON.parse(usuarioLocal) : 'Nenhum usuário no localStorage');
+        
+        // Verifica a API
+        const response = await fetch(`${API_BASE_URL}/login/usuario`, {
+            credentials: 'include'
+        });
+        
+        console.log('Status da API:', response.status);
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Resposta completa da API:', data);
+            
+            if (data.success && data.usuario) {
+                console.log('Dados do usuário:', data.usuario);
+                console.log('Tipo:', data.usuario.tipo);
+                console.log('Todos os campos:', Object.keys(data.usuario));
+                
+                // Verifica se há campo cargo
+                if (data.usuario.cargo) {
+                    console.log('Cargo:', data.usuario.cargo);
+                }
+            }
+        }
+        
+        console.log('=== FIM DEBUG ===');
+    } catch (error) {
+        console.error('Erro no debug:', error);
+    }
+}
+
+// Chame esta função após o login
+// debugDetalhado();

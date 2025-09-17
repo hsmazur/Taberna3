@@ -151,34 +151,123 @@ main {
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(58, 50, 38, 0.4);
 }
-/* Atualize o estilo do admin-panel e botões */
+/* ===== ESTILOS DO PAINEL ADMINISTRATIVO - ESTILO MEDIEVAL ===== */
+/* ===== ESTILOS DO PAINEL ADMINISTRATIVO - BOTÕES ALINHADOS ===== */
 #admin-panel {
-    display: none;
-    margin: 0 auto 1.5rem;
+    background: url("https://www.transparenttextures.com/patterns/old-paper.png"), rgba(255, 248, 225, 0.95);
+    padding: 25px;
+    border: 3px solid #8B4513;
+    border-radius: 12px;
+    margin: 2rem auto;
     max-width: 1200px;
-    padding: 0 1rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(139, 69, 19, 0.2);
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
-#admin-panel .botao-admin {
+#admin-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #8B4513, #D4A76A, #8B4513);
+    border-radius: 2px;
+}
+
+.admin-titulo {
+    font-size: 2rem;
+    color: #5C3317;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+    border-bottom: 2px solid #D4A76A;
+    padding-bottom: 0.5rem;
     display: inline-block;
-    background-color: #8b4513;
-    color: #f5ecd7;
-    padding: 0.8rem 1.5rem;
-    font-size: 1.1rem;
-    text-decoration: none;
-    border-radius: 30px;
-    transition: all 0.3s;
-    border: 2px solid #5d2e0d;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    font-family: "MedievalSharp", cursive;
-    margin: 0 0.5rem;
 }
 
-#admin-panel .botao-admin:hover {
-    background-color: #5d2e0d;
-    transform: translateY(-2px);
+.botoes-admin-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.botao-admin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom, #3A3226, #1A120B);
+    color: #D4A76A;
+    padding: 1rem 1.5rem;
+    font-size: 1.2rem;
+    text-align: center;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: all 0.3s;
+    border: 2px solid #D4A76A;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    min-width: 180px;
+}
+
+.botao-admin:hover {
+    background: linear-gradient(to bottom, #D4A76A, #B8860B);
+    color: #1A120B;
+    transform: translateY(-3px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    border-color: #8B4513;
+}
+
+.gerente-only {
+    background: linear-gradient(to bottom, #8B0000, #660000);
+    border: 2px solid #D4A76A;
+}
+
+.gerente-only:hover {
+    background: linear-gradient(to bottom, #A52A2A, #800000);
+    border: 2px solid #FFD700;
+}
+
+/* Responsividade para o painel administrativo */
+@media (max-width: 900px) {
+    #admin-panel {
+        padding: 20px 15px;
+    }
+    
+    .botoes-admin-container {
+        gap: 1rem;
+    }
+    
+    .botao-admin {
+        min-width: 160px;
+        padding: 0.9rem 1.2rem;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .botoes-admin-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .botao-admin {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .admin-titulo {
+        font-size: 1.7rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .botao-admin {
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+    }
 }
 
 /* Adicione media query para responsividade */

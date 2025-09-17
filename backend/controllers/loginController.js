@@ -19,20 +19,22 @@ const loginController = {
       await client.query('BEGIN');
       await client.query('SET search_path TO public');
 
-      // Buscar usuário pelo email
-      const usuarioResult = await client.query(
-        `SELECT u.id_usuario, u.nome_completo, u.email, u.senha,
-                CASE 
-                  WHEN f.id_funcionario IS NOT NULL THEN 'funcionario'
-                  WHEN c.id_cliente IS NOT NULL THEN 'cliente'
-                  ELSE 'usuario'
-                END as tipo
-         FROM usuario u
-         LEFT JOIN cliente c ON u.id_usuario = c.id_usuario
-         LEFT JOIN funcionario f ON u.id_usuario = f.id_usuario
-         WHERE u.email = $1`,
+    // controllers/loginController.js - Modificação na consulta SQL
+    const usuarioResult = await client.query(
+      `SELECT u.id_usuario, u.nome_completo, u.email, u.senha,
+          CASE 
+            WHEN f.id_funcionario IS NOT NULL THEN 
+              CASE WHEN f.cargo = 'gerente' THEN 'gerente' ELSE 'funcionario' END
+            WHEN c.id_cliente IS NOT NULL THEN 'cliente'
+            ELSE 'usuario'
+          END as tipo,
+          f.cargo as cargo_real -- Adicione esta linha para debug
+          FROM usuario u
+          LEFT JOIN cliente c ON u.id_usuario = c.id_usuario
+          LEFT JOIN funcionario f ON u.id_usuario = f.id_usuario
+          WHERE u.email = $1`,
         [email]
-      );
+    );
 
       if (usuarioResult.rows.length === 0) {
         return res.status(404).json({
