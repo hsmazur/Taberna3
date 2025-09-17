@@ -1,4 +1,4 @@
-/* Fontes e Reset */
+/* ======================= FONTES & RESET ======================= */
 .medievalsharp-regular {
     font-family: "MedievalSharp", cursive;
     font-weight: 400;
@@ -11,7 +11,7 @@
     box-sizing: border-box;
 }
 
-/* Estilo Geral */
+/* ======================= ESTILO GERAL ======================= */
 body {
     background-image: url("https://wallpapers.com/images/hd/old-paper-texture-parchment-grodfr8ezxzzei6l.jpg");
     background-attachment: fixed;
@@ -20,7 +20,7 @@ body {
     line-height: 1.6;
 }
 
-/* Cabeçalho */
+/* ======================= CABEÇALHO ======================= */
 #header {
     background-color: #1a120b;
     color: #d4a76a;
@@ -71,6 +71,8 @@ nav a:hover {
     background-color: #d4a76a;
     transform: translateY(-2px);
 }
+
+/* ======================= LOGIN / CADASTRO ======================= */
 .botao-login,
 .botao-cadastro {
     padding: 0.5rem 1rem;
@@ -100,7 +102,8 @@ nav a:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-/* Estilo para o usuário logado */
+
+/* ======================= USUÁRIO ======================= */
 #usuario-logado {
     display: flex;
     align-items: center;
@@ -127,12 +130,12 @@ nav a:hover {
     transform: translateY(-2px);
 }
 
-/* Garante que apenas um dos dois seja mostrado */
 #usuario-logado,
 #usuario-deslogado {
     margin-left: auto;
 }
 
+/* ======================= SUBCABEÇALHO ======================= */
 #header2 {
     background-color: #3a3226;
     color: #d4a76a;
@@ -141,7 +144,7 @@ nav a:hover {
     font-size: 0.9rem;
 }
 
-/* Conteúdo Principal */
+/* ======================= CONTEÚDO PRINCIPAL ======================= */
 main {
     max-width: 1200px;
     margin: 2rem auto;
@@ -151,143 +154,57 @@ main {
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(58, 50, 38, 0.4);
 }
-/* ===== ESTILOS DO PAINEL ADMINISTRATIVO - ESTILO MEDIEVAL ===== */
+
+/* ======================= PAINEL ADMIN ======================= */
 #admin-panel {
-    background: url("https://www.transparenttextures.com/patterns/old-paper.png"), rgba(255, 248, 225, 0.95);
-    padding: 25px;
-    border: 3px solid #8B4513;
-    border-radius: 12px;
+    background-color: #fff9e6;
+    border: 2px solid #d4a76a;
+    border-radius: 10px;
+    padding: 2rem;
     margin: 2rem auto;
     max-width: 1200px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(139, 69, 19, 0.2);
     text-align: center;
-    position: relative;
-    overflow: hidden;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 #admin-panel::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, #8B4513, #D4A76A, #8B4513);
-    border-radius: 2px;
-}
-
-.admin-titulo {
-    font-size: 2rem;
-    color: #5C3317;
-    margin-bottom: 1.5rem;
-    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
-    border-bottom: 2px solid #D4A76A;
+    content: "⚔️ Gerenciamento ⚔️";
+    display: block;
+    font-size: 1.8rem;
+    color: #1a120b;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #d4a76a;
     padding-bottom: 0.5rem;
-    display: inline-block;
 }
 
 .botoes-admin-container {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
-    gap: 1.5rem;
-    margin-top: 1rem;
+    justify-content: center;
+    gap: 1rem;
 }
 
 .botao-admin {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(to bottom, #3A3226, #1A120B);
-    color: #D4A76A;
+    display: inline-block;
+    background-color: #1a120b;
+    color: #d4a76a;
     padding: 1rem 1.5rem;
-    font-size: 1.2rem;
-    text-align: center;
     border-radius: 30px;
+    border: 2px solid #d4a76a;
     text-decoration: none;
     transition: all 0.3s;
-    border: 2px solid #D4A76A;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    min-width: 180px;
 }
 
 .botao-admin:hover {
-    background: linear-gradient(to bottom, #D4A76A, #B8860B);
-    color: #1A120B;
+    background-color: #d4a76a;
+    color: #1a120b;
     transform: translateY(-3px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    border-color: #8B4513;
 }
 
-.gerente-only {
-    background: linear-gradient(to bottom, #8B0000, #660000);
-    border: 2px solid #D4A76A;
-}
-
-.gerente-only:hover {
-    background: linear-gradient(to bottom, #A52A2A, #800000);
-    border: 2px solid #FFD700;
-}
-
-/* Responsividade para o painel administrativo */
-@media (max-width: 900px) {
-    #admin-panel {
-        padding: 20px 15px;
-    }
-    
-    .botoes-admin-container {
-        gap: 1rem;
-    }
-    
-    .botao-admin {
-        min-width: 160px;
-        padding: 0.9rem 1.2rem;
-        font-size: 1.1rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .botoes-admin-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .botao-admin {
-        width: 100%;
-        max-width: 300px;
-    }
-    
-    .admin-titulo {
-        font-size: 1.7rem;
-    }
-}
-
-@media (max-width: 600px) {
-    .botao-admin {
-        padding: 0.8rem 1rem;
-        font-size: 1rem;
-    }
-}
-
-/* Adicione media query para responsividade */
-@media (max-width: 600px) {
-    #admin-panel .botao-admin {
-        display: block;
-        margin: 0.5rem auto;
-        width: 80%;
-    }
-}
-
-#legenda {
-    font-size: 2.5rem;
-    text-align: center;
-    margin: 1rem 0 2rem;
-    color: #1a120b;
-    border-bottom: 2px solid #d4a76a;
-    padding-bottom: 0.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-/* ===== BANNER DO MELHOR LANCHE ===== */
+/* ======================= BANNER MELHOR LANCHE ======================= */
+/* ======================= BANNER MELHOR LANCHE ======================= */
 #banner-melhor-lanche {
     max-width: 1200px;
     margin: 2rem auto;
@@ -300,176 +217,109 @@ main {
     border-radius: 15px;
     padding: 2rem;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 2rem;
     box-shadow: 0 8px 25px rgba(139, 69, 19, 0.3);
-    position: relative;
-    overflow: hidden;
 }
 
-.banner-content::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 100%;
-    height: 200%;
-    background: url('https://www.transparenttextures.com/patterns/old-paper.png');
-    opacity: 0.1;
-    pointer-events: none;
-}
-
-.banner-text {
-    flex: 1;
-    position: relative;
-    z-index: 2;
-}
-
-.banner-text h2 {
-    color: #8B0000;
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.banner-text h3 {
-    color: #3A3226;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.banner-text p {
-    color: #5C4D3D;
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-}
-
-.banner-rating {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.estrelas {
-    color: #FFD700;
-    font-size: 1.2rem;
-}
-
-.estrelas .fas {
-    margin-right: 2px;
-}
-
-#banner-avaliacao {
-    color: #5C4D3D;
-    font-weight: bold;
-}
-
-.banner-preco {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-#banner-preco-texto {
-    font-size: 2rem;
-    color: #8B0000;
-    font-weight: bold;
-}
-
-.btn-banner-comprar {
-    background: linear-gradient(to bottom, #8B0000, #660000);
-    color: #FFD700;
-    border: 2px solid #FFD700;
-    padding: 1rem 2rem;
-    font-size: 1.2rem;
-    border-radius: 30px;
-    cursor: pointer;
-    font-family: "MedievalSharp", cursive;
-    transition: all 0.3s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.btn-banner-comprar:hover {
-    background: linear-gradient(to bottom, #660000, #8B0000);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-}
-
+/* imagem à esquerda */
 .banner-image {
-    flex: 0 0 250px;
-    position: relative;
-    z-index: 2;
+    flex: 0 0 260px;
 }
-
 .banner-image img {
     width: 100%;
-    height: 200px;
+    height: 260px;
     object-fit: cover;
     border: 3px solid #3A3226;
     border-radius: 10px;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Responsividade */
-@media (max-width: 900px) {
-    .banner-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .banner-rating {
-        justify-content: center;
-    }
-    
-    .banner-preco {
-        justify-content: center;
-    }
-    
-    .banner-image {
-        flex: 0 0 auto;
-        width: 200px;
-    }
+/* texto à direita */
+.banner-text {
+    flex: 1;
 }
 
-@media (max-width: 600px) {
-    .banner-content {
-        padding: 1.5rem;
-    }
-    
-    .banner-text h2 {
-        font-size: 1.5rem;
-    }
-    
-    .banner-text h3 {
-        font-size: 1.3rem;
-    }
-    
-    .btn-banner-comprar {
-        padding: 0.8rem 1.5rem;
-        font-size: 1.1rem;
-    }
-    
-    .banner-image {
-        width: 150px;
-    }
-    
-    .banner-image img {
-        height: 150px;
-    }
+.banner-text h2 {
+    color: #8B0000;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
 }
 
-/* Efeito de brilho no banner */
-@keyframes brilho {
-    0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-    50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.8); }
-    100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+.banner-text h3 {
+    color: #3A3226;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
 }
 
-.banner-content {
-    animation: brilho 3s infinite;
+.banner-text p {
+    color: #5C4D3D;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
 }
-/* Grid de Produtos - 3 por linha */
+
+/* estrelas amarelas maiores */
+.banner-rating {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.estrelas {
+    color: #FFD700;
+    font-size: 1.6rem;
+}
+#banner-avaliacao {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #5C4D3D;
+}
+
+/* preço alinhado à esquerda */
+#banner-preco-texto {
+    font-size: 2.4rem;
+    color: #8B0000;
+    font-weight: bold;
+}
+
+/* layout preço + botão */
+.banner-preco {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* botão continua centralizado */
+.btn-banner-comprar {
+    margin: 0 auto; /* força centralização */
+    background-color: #8B0000;
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    padding: 1rem 2.5rem;
+    font-size: 1.3rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: "MedievalSharp", cursive;
+    transition: all 0.3s;
+}
+.btn-banner-comprar:hover {
+    background-color: #FFD700;
+    color: #8B0000;
+}
+
+
+/* ======================= CARDS PRODUTOS ======================= */
+#legenda {
+    font-size: 2.5rem;
+    text-align: center;
+    margin: 1rem 0 2rem;
+    color: #1a120b;
+    border-bottom: 2px solid #d4a76a;
+    padding-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+
+}
+
 #produtosContainer {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* Sempre 3 colunas */
@@ -531,24 +381,6 @@ main {
     padding-top: 1rem;
 }
 
-/* Responsividade - ajuste para telas menores */
-@media (max-width: 1024px) {
-    #produtosContainer {
-        grid-template-columns: repeat(2, 1fr); /* 2 colunas em tablets */
-    }
-}
-
-@media (max-width: 600px) {
-    #produtosContainer {
-        grid-template-columns: 1fr; /* 1 coluna em mobile */
-    }
-    
-    .card {
-        max-width: 350px;
-        margin: 0 auto; /* Centraliza em mobile */
-    }
-}
-
 /* Efeito de hover mais suave */
 .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -605,7 +437,31 @@ main {
     white-space: nowrap;
 }
 
-/* Botão do Carrinho */
+/* ======================= LINKS DE AVALIAÇÃO ======================= */
+#link-avaliacoes,
+a[href*="CRUDavaliacoes"] {
+    display: block;
+    text-align: center;
+    margin: 1.5rem auto;
+    padding: 1rem;
+    background-color: #1a120b;
+    color: #d4a76a;
+    border-radius: 25px;
+    border: 2px solid #d4a76a;
+    max-width: 600px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+}
+
+#link-avaliacoes:hover,
+a[href*="CRUDavaliacoes"]:hover {
+    background-color: #d4a76a;
+    color: #1a120b;
+    transform: translateY(-2px);
+}
+
+/* ======================= BOTÃO CARRINHO ======================= */
 .botao-carrinho-wrapper {
     margin: 2rem auto;
     max-width: 600px;
@@ -621,8 +477,8 @@ main {
     text-align: center;
     border-radius: 30px;
     text-decoration: none;
-    transition: all 0.3s;
     border: 2px solid #d4a76a;
+    transition: all 0.3s;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -630,20 +486,15 @@ main {
     background-color: #d4a76a;
     color: #1a120b;
     transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Rodapé */
+/* ======================= RODAPÉ ======================= */
 #final {
     background-color: #1a120b;
     color: #d4a76a;
     padding: 2rem;
     margin-top: 3rem;
     text-align: center;
-}
-
-#final h3 {
-    margin: 0.5rem 0;
 }
 
 #final a {
@@ -655,92 +506,104 @@ main {
     text-decoration: underline;
 }
 
-/* Scrollbar personalizada */
-::-webkit-scrollbar {
-    width: 10px;
+/* ======================= SCROLLBAR ======================= */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: #8b4513; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #5d2e0d; }
+
+/* ======================= RESPONSIVIDADE ======================= */
+
+/* Tablets médios (até 1024px) */
+@media (max-width: 1024px) {
+    #produtosContainer {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
+/* Tablets e celulares grandes (até 900px) */
+@media (max-width: 900px) {
+    .banner-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    .banner-rating {
+        justify-content: center;
+    }
+    .banner-preco {
+        justify-content: center;
+    }
+    .banner-image {
+        flex: 0 0 auto;
+        width: 200px;
+        margin: 0 auto;
+    }
 }
 
-::-webkit-scrollbar-thumb {
-    background: #8b4513;
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #5d2e0d;
-}
-
-/* Responsividade */
+/* Celulares (até 768px) */
 @media (max-width: 768px) {
     #header {
         flex-direction: column;
         text-align: center;
+        flex-wrap: wrap;
     }
-    
     nav {
         margin: 1rem 0 0;
+        width: 100%;
+        order: 3;
     }
-    
     #produtosContainer {
         grid-template-columns: 1fr;
     }
-    
     .card {
-        flex-direction: column;
-        text-align: center;
+        max-width: 350px;
+        margin: 0 auto;
     }
-    
-    .card img {
-        margin-right: 0;
-        margin-bottom: 1rem;
-    }
-    
-    .quantidade {
-        justify-content: center;
-    }
-}
-
-/* Efeitos Especiais */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.botao-carrinho:hover {
-    animation: pulse 1s infinite;
-}
-
-.card:hover .card-preco {
-    color: #b22222;
-    transition: color 0.3s;
-}
-@media (max-width: 768px) {
-    .botoes-usuario {
-        margin: 1rem 0 0;
-        justify-content: center;
-        width: 100%;
-    }
-    
-    #header {
-        flex-wrap: wrap;
-    }
-    
-    nav {
-        width: 100%;
-        order: 3;
-        margin-top: 1rem;
-    }
-}
-/* Responsividade */
-@media (max-width: 768px) {
     #usuario-logado, #usuario-deslogado {
         margin: 1rem 0 0;
         width: 100%;
         justify-content: center;
+    }
+    .botoes-admin-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .botao-admin {
+        width: 100%;
+        max-width: 300px;
+    }
+    .banner-text h2 {
+        font-size: 1.5rem;
+    }
+    .banner-text h3 {
+        font-size: 1.3rem;
+    }
+    .btn-banner-comprar {
+        padding: 0.8rem 1.5rem;
+        font-size: 1.1rem;
+    }
+    .banner-image {
+        width: 150px;
+    }
+    .banner-image img {
+        height: 150px;
+    }
+}
+
+/* Celulares pequenos (até 600px) */
+@media (max-width: 600px) {
+    .botao-admin {
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+    }
+    #admin-panel .botao-admin {
+        width: 80%;
+        margin: 0.5rem auto;
+    }
+    .banner-content {
+        padding: 1.5rem;
+    }
+    .banner-image img {
+        height: 150px;
     }
 }
