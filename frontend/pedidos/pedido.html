@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Pedidos - Taberna do Dragão</title>
+    <link rel="stylesheet" href="../universal.css">
+    <link rel="stylesheet" href="pedido.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header id="header"> 
+        <img id="logo" src="../img/logo.png" alt="Taberna do Dragão">
+        <div>
+            <h1>Gerenciar Pedidos</h1>
+            <h2>Taberna do Dragão</h2>
+        </div>
+    </header>
+    <header id="header2">
+        <h3>Controle dos Pedidos</h3>
+    </header>
+    
+    
+    <main class="crud-container">
+        <div class="crud-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id">ID do Pedido:</label>
+                    <input type="number" name="id" id="id" class="crud-input">
+                    <input type="button" value="Procurar" id="btProcure" onclick="procure()" class="btn medieval-btn" style="display:inline;">
+                </div>
+
+                <div class="form-group">
+                    <label for="id_usuario">ID do Usuário:</label>
+                    <input type="number" name="id_usuario" id="id_usuario" class="crud-input" readonly>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nome_usuario">Nome do Cliente:</label>
+                    <input type="text" name="nome_usuario" id="nome_usuario" class="crud-input" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="data_pedido">Data do Pedido:</label>
+                    <input type="text" name="data_pedido" id="data_pedido" class="crud-input" readonly>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="pagamento">Status do Pagamento:</label>
+                    <select name="pagamento" id="pagamento" class="crud-input" disabled>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Aprovado">Aprovado</option>
+                        <option value="Cancelado">Cancelado</option>
+                        <option value="Reembolsado">Reembolsado</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="valor_total">Valor Total (R$):</label>
+                    <input type="number" name="valor_total" id="valor_total" class="crud-input" readonly>
+                </div>
+            </div>
+
+            <div class="produtos-pedido" id="produtos-pedido">
+                <h4>Produtos do Pedido:</h4>
+                <div id="lista-produtos"></div>
+            </div>
+
+            <div class="button-group">
+                <input type="button" value="Alterar" id="btAlterar" onclick="alterar()" class="btn medieval-btn" style="display:none;">
+                <input type="button" value="Excluir" id="btExcluir" onclick="excluir()" class="btn medieval-btn-cancel" style="display:none;">
+                <input type="button" value="Salvar" id="btSalvar" onclick="salvar()" class="btn medieval-btn-success" style="display:none;">
+                <input type="button" value="Cancelar" id="btCancelar" onclick="cancelarOperacao()" class="btn medieval-btn-cancel" style="display:none;">
+            </div>
+
+            <div id="divAviso" class="aviso"></div>
+        </div>
+
+        <div class="pedidos-list">
+            <h3>Pedidos Recentes</h3>
+            <div id="outputSaida" class="lista-pedidos"></div>
+        </div>
+    </main>
+    
+    <footer id="final">
+        <a href="../menu.html" class="btn medieval-btn">Voltar ao Site</a>
+        <br> <br>
+        <h3>Taberna do Dragão &copy; 2025</h3>
+    </footer>
+
+    <script src="pedido.js"></script>
+</body>
+</html>

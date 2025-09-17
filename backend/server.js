@@ -109,6 +109,9 @@ app.use('/cadastrar', cadastroRoutes);
 const loginRoutes = require('./routes/loginRoutes');
 app.use('/login', loginRoutes);
 
+const pedidoRoutes = require('./routes/pedidoRoutes');
+app.use('/api/pedidos', pedidoRoutes);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Rota padrão
