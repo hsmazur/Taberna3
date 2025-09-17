@@ -29,4 +29,7 @@ router.put('/:id', avaliacaoController.atualizarAvaliacao);
 // DELETE /api/avaliacoes/:id - Excluir avaliação
 router.delete('/:id', avaliacaoController.excluirAvaliacao);
 
+// GET /api/avaliacoes/produto/:id - Buscar avaliações de um produto
+router.get('/produto/:id', avaliacaoController.getAvaliacoesPorProduto);
+
 module.exports = router;

@@ -306,6 +306,34 @@ class AvaliacaoController {
             });
         }
     }
+    // ========================
+    // BUSCAR AVALIAÇÕES POR PRODUTO
+    // ========================
+    static async getAvaliacoesPorProduto(req, res) {
+        try {
+            const { id } = req.params;
+            
+            const sql = `
+            SELECT a.id_avaliacao, a.nota, a.comentario, a.data_avaliacao,
+            u.id_usuario, u.nome_completo as usuario_nome
+            FROM avaliacao a
+            INNER JOIN usuario u ON a.id_usuario = u.id_usuario
+            WHERE a.id_produto = $1
+            ORDER BY a.data_avaliacao DESC
+            `;
+            
+            const result = await query(sql, [id]);
+            
+            res.json(result.rows);
+        } catch (error) {
+            console.error('Erro ao buscar avaliações do produto:', error);
+            res.status(500).json({ 
+                error: 'Erro interno do servidor',
+                details: error.message 
+            });
+        }
+    }
 }
+
 
 module.exports = AvaliacaoController;

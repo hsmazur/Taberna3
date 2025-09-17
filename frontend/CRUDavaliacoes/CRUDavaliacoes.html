@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar Avaliações - Taberna do Dragão</title>
+    <link rel="stylesheet" href="../universal.css">
+    <link rel="stylesheet" href="CRUDavaliacoes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header id="header"> 
+        <img id="logo" src="../img/logo.png" alt="Taberna do Dragão">
+        <div>
+            <h1>Visualizar Avaliações</h1>
+            <h2>Taberna do Dragão</h2>
+        </div>
+    </header>
+    <header id="header2">
+        <h3>Consulte as avaliações dos nossos lanches</h3>
+    </header>
+
+    <main class="avaliacoes-container">
+        <div class="pesquisa-container">
+            <div class="form-group">
+                <label for="id_produto">ID do Lanche:</label>
+                <div class="input-group">
+                    <input type="number" name="id_produto" id="id_produto" class="crud-input" 
+                           placeholder="Digite o ID do lanche" min="1">
+                    <button id="btPesquisar" class="btn medieval-btn" onclick="pesquisarAvaliacoes()">
+                        <i class="fas fa-search"></i> Pesquisar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-produto" id="info-produto" style="display: none;">
+            <div class="produto-header">
+                <img id="produto-imagem" src="" alt="" onerror="this.src='../img/placeholder.png'">
+                <div class="produto-info">
+                    <h3 id="produto-nome"></h3>
+                    <p id="produto-ingredientes"></p>
+                    <div class="produto-estatisticas">
+                        <span class="media-avaliacao">
+                            <span id="media-nota"></span>
+                            <span class="estrelas-pequenas" id="estrelas-media"></span>
+                        </span>
+                        <span class="total-avaliacoes" id="total-avaliacoes"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lista-avaliacoes" id="lista-avaliacoes">
+            <div class="aviso-inicial">
+                <i class="fas fa-info-circle"></i>
+                <p>Digite o ID de um lanche para visualizar suas avaliações</p>
+            </div>
+        </div>
+
+        <div id="divAviso" class="aviso"></div>
+    </main>
+    
+    <footer id="final">
+        <a href="../menu.html" class="btn medieval-btn">Voltar ao Menu</a>
+        <br><br>
+        <h3>Taberna do Dragão &copy; 2025</h3>
+    </footer>
+
+    <script src="CRUDavaliacoes.js"></script>
+</body>
+</html>
