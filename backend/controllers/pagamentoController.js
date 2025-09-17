@@ -1,9 +1,9 @@
-// controllers/pagamentoController.js - Controlador de pagamentos
+// controllers/pagamentoController.js - Controlador de pagamentos (versão simplificada)
 const db = require('../database');
 
 // Finalizar pedido e processar pagamento
 const finalizarPedido = async (req, res) => {
-    const client = await db.connect();
+    const client = await db.pool.connect();
     
     try {
         await client.query('BEGIN');
@@ -54,84 +54,6 @@ const finalizarPedido = async (req, res) => {
                 data_pedido = CURRENT_TIMESTAMP
             WHERE id_pedido = $3
         `, [metodoPagamento, total, pedidoId]);
-        
-        // Se há dados de entrega, salva na tabela de entregas (criar se necessário)
-        if (dadosEntrega && dadosEntrega.taxaEntrega > 0) {
-            // Verifica se existe tabela de entrega, senão cria
-            await client.query(`
-                CREATE TABLE IF NOT EXISTS entrega (
-                    id_entrega SERIAL PRIMARY KEY,
-                    id_pedido INT UNIQUE REFERENCES pedido(id_pedido),
-                    nome_cliente VARCHAR(150) NOT NULL,
-                    telefone VARCHAR(20) NOT NULL,
-                    endereco VARCHAR(200) NOT NULL,
-                    bairro VARCHAR(100) NOT NULL,
-                    taxa_entrega DECIMAL(10,2) NOT NULL,
-                    status_entrega VARCHAR(50) DEFAULT 'Pendente',
-                    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            `);
-            
-            await client.query(`
-                INSERT INTO entrega (id_pedido, nome_cliente, telefone, endereco, bairro, taxa_entrega)
-                VALUES ($1, $2, $3, $4, $5, $6)
-            `, [
-                pedidoId,
-                dadosEntrega.nome,
-                dadosEntrega.telefone,
-                dadosEntrega.endereco,
-                dadosEntrega.bairro,
-                dadosEntrega.taxaEntrega
-            ]);
-        }
-        
-        // Se for pagamento com cartão, salva informações (mascaradas)
-        if (metodoPagamento === 'debito' && dadosCartao) {
-            // Cria tabela de pagamentos se não existir
-            await client.query(`
-                CREATE TABLE IF NOT EXISTS pagamento (
-                    id_pagamento SERIAL PRIMARY KEY,
-                    id_pedido INT UNIQUE REFERENCES pedido(id_pedido),
-                    tipo_pagamento VARCHAR(50) NOT NULL,
-                    ultimos_digitos_cartao VARCHAR(4),
-                    nome_cartao VARCHAR(100),
-                    valor_pago DECIMAL(10,2) NOT NULL,
-                    data_pagamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            `);
-            
-            await client.query(`
-                INSERT INTO pagamento (id_pedido, tipo_pagamento, ultimos_digitos_cartao, nome_cartao, valor_pago)
-                VALUES ($1, $2, $3, $4, $5)
-            `, [
-                pedidoId,
-                metodoPagamento,
-                dadosCartao.numero, // Já vem apenas os 4 últimos dígitos
-                dadosCartao.nome,
-                total
-            ]);
-        }
-        
-        // Se for dinheiro com troco, salva a informação
-        if (metodoPagamento === 'dinheiro' && valorTroco) {
-            await client.query(`
-                CREATE TABLE IF NOT EXISTS pagamento (
-                    id_pagamento SERIAL PRIMARY KEY,
-                    id_pedido INT UNIQUE REFERENCES pedido(id_pedido),
-                    tipo_pagamento VARCHAR(50) NOT NULL,
-                    valor_pago DECIMAL(10,2) NOT NULL,
-                    valor_troco DECIMAL(10,2),
-                    data_pagamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            `);
-            
-            await client.query(`
-                INSERT INTO pagamento (id_pedido, tipo_pagamento, valor_pago, valor_troco)
-                VALUES ($1, $2, $3, $4)
-                ON CONFLICT (id_pedido) DO UPDATE SET
-                valor_troco = $4
-            `, [pedidoId, metodoPagamento, total, valorTroco]);
-        }
         
         // Confirma a transação
         await client.query('COMMIT');
@@ -212,39 +134,6 @@ async function buscarDetalhesPedido(pedidoId) {
         `, [pedidoId]);
         
         pedido.itens = itensResult.rows;
-        
-        // Busca dados de entrega se houver
-        try {
-            const entregaResult = await db.query(`
-                SELECT nome_cliente, telefone, endereco, bairro, taxa_entrega, status_entrega
-                FROM entrega
-                WHERE id_pedido = $1
-            `, [pedidoId]);
-            
-            if (entregaResult.rows.length > 0) {
-                pedido.entrega = entregaResult.rows[0];
-            }
-        } catch (err) {
-            // Tabela de entrega pode não existir ainda
-            console.log('Tabela entrega não encontrada');
-        }
-        
-        // Busca dados de pagamento se houver
-        try {
-            const pagamentoResult = await db.query(`
-                SELECT tipo_pagamento, ultimos_digitos_cartao, nome_cartao, 
-                       valor_pago, valor_troco, data_pagamento
-                FROM pagamento
-                WHERE id_pedido = $1
-            `, [pedidoId]);
-            
-            if (pagamentoResult.rows.length > 0) {
-                pedido.pagamento_detalhes = pagamentoResult.rows[0];
-            }
-        } catch (err) {
-            // Tabela de pagamento pode não existir ainda
-            console.log('Tabela pagamento não encontrada');
-        }
         
         return pedido;
         

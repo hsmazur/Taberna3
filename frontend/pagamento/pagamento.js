@@ -387,7 +387,7 @@ async function finalizarPedido(metodo) {
         localStorage.removeItem('dadosEntrega');
         
         // Redireciona para confirmação
-        window.location.href = `confirmacao.html?pedido=${resultado.pedidoId}`;
+        window.location.href = `../menu.html?pedido=${resultado.pedidoId}`;
         
     } catch (error) {
         console.error('Erro ao finalizar pedido:', error);
