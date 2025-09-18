@@ -115,6 +115,10 @@ app.use('/api/pedidos', pedidoRoutes);
 const avaliacaoRoutes = require('./routes/avaliacaoRoutes');
 app.use('/api/avaliacoes', avaliacaoRoutes);
 
+// Nova rota para recuperação de senha
+const recuperarSenhaRoutes = require('./routes/recuperarSenhaRoutes');
+app.use('/api/recuperar-senha', recuperarSenhaRoutes);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Rota padrão

@@ -18,8 +18,28 @@
     margin-bottom: 1.5rem;
 }
 
-/* Formulário */
-#form-login {
+/* Etapas */
+.etapa {
+    display: none;
+}
+
+.etapa.active {
+    display: block;
+}
+
+.instrucao {
+    text-align: center;
+    color: #3a3226;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: rgba(212, 167, 106, 0.2);
+    border-radius: 4px;
+    border-left: 4px solid #d4a76a;
+}
+
+/* Formulários */
+form {
     margin-top: 2rem;
 }
 
@@ -46,6 +66,7 @@
 
 .grupo-input input:focus {
     outline: 2px solid #3a3226;
+    border-color: #3a3226;
 }
 
 /* Grupo de Input de Senha */
@@ -79,8 +100,8 @@
     transform: scale(1.1);
 }
 
-/* Botão de Login */
-.botao-login {
+/* Botões */
+.botao-recuperar {
     display: block;
     width: 100%;
     padding: 1rem;
@@ -91,58 +112,79 @@
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s;
-    margin-top: 1.5rem;
+    margin-bottom: 1rem;
 }
 
-.botao-login:hover {
+.botao-recuperar:hover {
     background-color: #d4a76a;
     color: #1a120b;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Links Úteis */
-.links-uteis {
-    margin-top: 1.5rem;
+.botao-reenviar {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    background-color: transparent;
+    color: #8b0000;
+    border: 2px solid #8b0000;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-.esqueceu-senha {
+.botao-reenviar:hover {
+    background-color: #8b0000;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(139, 0, 0, 0.3);
+}
+
+.botao-reenviar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.botao-reenviar:disabled:hover {
+    background-color: transparent;
+    color: #8b0000;
+    box-shadow: none;
+}
+
+/* Link para Voltar */
+.voltar-login {
     text-align: center;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #d4a76a;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #d4a76a;
 }
 
-.esqueceu-senha a {
+.voltar-login a {
     color: #8b0000;
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    font-weight: bold;
     transition: color 0.3s;
 }
 
-.esqueceu-senha a:hover {
+.voltar-login a:hover {
     color: #1a120b;
-    text-decoration: underline;
-}
-
-.cadastro-link {
-    text-align: center;
-    font-size: 1rem;
-}
-
-.cadastro-link a {
-    color: #8b0000;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.cadastro-link a:hover {
     text-decoration: underline;
 }
 
 /* Mensagens de Erro */
 .mensagem-erro {
     color: #8b0000;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    display: block;
+}
+
+.mensagem-sucesso {
+    color: #2e8b57;
     font-size: 0.9rem;
     margin-top: 0.3rem;
     display: block;
@@ -157,6 +199,44 @@ input:valid {
     border-color: #2e8b57;
 }
 
+/* Indicador de força da senha */
+.forca-senha {
+    height: 4px;
+    background-color: #e0e0e0;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.forca-senha-barra {
+    height: 100%;
+    transition: all 0.3s;
+    border-radius: 2px;
+}
+
+.forca-fraca {
+    width: 33%;
+    background-color: #ff4444;
+}
+
+.forca-media {
+    width: 66%;
+    background-color: #ffaa00;
+}
+
+.forca-forte {
+    width: 100%;
+    background-color: #44ff44;
+}
+
+/* Countdown do reenvio */
+.countdown {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     .container {
@@ -164,7 +244,11 @@ input:valid {
         padding: 1.5rem;
     }
     
-    .links-uteis {
+    .container h1 {
+        font-size: 1.5rem;
+    }
+    
+    .instrucao {
         font-size: 0.9rem;
     }
 }

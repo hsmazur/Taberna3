@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha - Taberna do Dragão</title>
+    <link rel="stylesheet" href="../universal.css">
+    <link rel="stylesheet" href="recuperar.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Cabeçalho Igual às Outras Páginas -->
+    <header id="header"> 
+        <img id="logo" src="../img/logo.png" alt="Taberna do Dragão">
+        <div>
+            <h1>Taberna do Dragão</h1>
+            <h2>Alimentando o reino desde 2025!</h2>
+        </div>
+    </header>
+    <header id="header2">
+        <h3>Rua Zézinho da Silva, 123 - Centro</h3>
+    </header>
+
+    <main class="container">
+        <h1>Recuperar Senha</h1>
+        
+        <!-- Etapa 1: Solicitar Token -->
+        <div id="etapa-email" class="etapa active">
+            <p class="instrucao">Digite seu e-mail para receber o código de recuperação:</p>
+            <form id="form-solicitar-token">
+                <div class="grupo-input">
+                    <label for="email-recuperacao">E-mail</label>
+                    <input type="email" id="email-recuperacao" name="email" required placeholder="cavaleiro@reino.com">
+                    <span id="erro-email-recuperacao" class="mensagem-erro"></span>
+                </div>
+                
+                <button type="submit" class="botao-recuperar">Enviar Código de Recuperação</button>
+            </form>
+        </div>
+
+        <!-- Etapa 2: Verificar Token -->
+        <div id="etapa-token" class="etapa">
+            <p class="instrucao">Digite o código de recuperação enviado para seu e-mail:</p>
+            <form id="form-verificar-token">
+                <div class="grupo-input">
+                    <label for="token-recuperacao">Código de Recuperação</label>
+                    <input type="text" id="token-recuperacao" name="token" required placeholder="Digite o código de 6 dígitos" maxlength="6">
+                    <span id="erro-token" class="mensagem-erro"></span>
+                </div>
+                
+                <button type="submit" class="botao-recuperar">Verificar Código</button>
+                <button type="button" id="btn-reenviar-token" class="botao-reenviar">Reenviar Código</button>
+            </form>
+        </div>
+
+        <!-- Etapa 3: Nova Senha -->
+        <div id="etapa-senha" class="etapa">
+            <p class="instrucao">Digite sua nova senha:</p>
+            <form id="form-nova-senha">
+                <div class="grupo-input">
+                    <label for="nova-senha">Nova Senha</label>
+                    <div class="input-senha">
+                        <input type="password" id="nova-senha" name="novaSenha" required placeholder="••••••••" minlength="8">
+                        <button type="button" class="botao-visualizar" data-target="nova-senha">
+                            <img src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png" alt="Visualizar senha">
+                        </button>
+                    </div>
+                    <span id="erro-nova-senha" class="mensagem-erro"></span>
+                </div>
+                
+                <div class="grupo-input">
+                    <label for="confirmar-senha">Confirmar Nova Senha</label>
+                    <div class="input-senha">
+                        <input type="password" id="confirmar-senha" name="confirmarSenha" required placeholder="••••••••" minlength="8">
+                        <button type="button" class="botao-visualizar" data-target="confirmar-senha">
+                            <img src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png" alt="Visualizar senha">
+                        </button>
+                    </div>
+                    <span id="erro-confirmar-senha" class="mensagem-erro"></span>
+                </div>
+                
+                <button type="submit" class="botao-recuperar">Alterar Senha</button>
+            </form>
+        </div>
+
+        <div class="voltar-login">
+            <a href="../login/login.html">← Voltar ao Login</a>
+        </div>
+    </main>
+
+    <!-- Rodapé Igual às Outras Páginas -->
+    <footer id="final">
+        <h3>Taberna do Dragão &copy; 2025</h3>
+        <h3>Contato: (44) 91234-5678</h3>
+    </footer>
+    
+    <script src="recuperar.js"></script>
+</body>
+</html>
